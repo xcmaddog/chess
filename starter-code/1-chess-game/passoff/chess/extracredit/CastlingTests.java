@@ -1,3 +1,5 @@
+/**This is a comment which serves to test whether or not my changes are being saved from my computer to the github repository. */
+
 package passoff.chess.extracredit;
 
 import chess.*;
