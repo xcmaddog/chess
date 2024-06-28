@@ -34,6 +34,15 @@ public class ChessPosition {
         return col;
     }
 
+    /**
+     * @return boolean representing whether or not the position is on the board
+     */
+    public boolean isOnBoard(){
+        int row = getRow();
+        int col = getColumn();
+        return row <= 8 && row >= 1 && col <= 8 && col >= 1;
+    }
+
     /*
      * overriding the equals() and hashCode() functions
      */

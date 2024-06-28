@@ -53,7 +53,8 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        RookMovesCalculator rmc = new RookMovesCalculator(board,myPosition);
+        return rmc.pieceMoves();
     }
 
     @Override
