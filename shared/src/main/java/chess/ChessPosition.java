@@ -43,6 +43,10 @@ public class ChessPosition {
         return row <= 8 && row >= 1 && col <= 8 && col >= 1;
     }
 
+    public ChessPosition getNextSquare(int rowAdd, int colAdd){
+        return new ChessPosition(getRow()+rowAdd, getColumn()+colAdd);
+    }
+
     /*
      * overriding the equals() and hashCode() functions
      */

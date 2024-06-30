@@ -53,8 +53,8 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        RookMovesCalculator rmc = new RookMovesCalculator(board,myPosition);
-        return rmc.pieceMoves();
+        BishopMovesCalculator bmc = new BishopMovesCalculator(board,myPosition);
+        return bmc.pieceMoves();
     }
 
     @Override
