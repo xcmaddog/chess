@@ -43,7 +43,7 @@ public class PieceMovesCalculator {
             return ChessGame.TeamColor.WHITE;
         }
     }
-    private HashSet<ChessMove> movesInOneDirection (int rowAdd,int colAdd){//the default goes to the edge of the board unless blocked by other pieces
+    public HashSet<ChessMove> movesInOneDirection(int rowAdd, int colAdd){//the default goes to the edge of the board unless blocked by other pieces
         HashSet<ChessMove> result = new HashSet<ChessMove>();
         ChessPosition aPosition = myPosition.getNextSquare(rowAdd,colAdd);
         while (aPosition.isOnBoard()){

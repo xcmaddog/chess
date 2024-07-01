@@ -101,6 +101,8 @@ public class ChessBoard {
         //set the king
         aPosition = new ChessPosition(8,5);
         addPiece(aPosition,new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING));
+
+        //might need to clear the rest of the board too...
     }
 
     @Override

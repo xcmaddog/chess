@@ -53,8 +53,22 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        BishopMovesCalculator bmc = new BishopMovesCalculator(board,myPosition);
-        return bmc.pieceMoves();
+        switch (type){
+            case KING: BishopMovesCalculator kmc = new BishopMovesCalculator(board,myPosition);
+                return kmc.pieceMoves();
+            case PAWN: BishopMovesCalculator pmc = new BishopMovesCalculator(board,myPosition);
+                return pmc.pieceMoves();
+            case ROOK: RookMovesCalculator rmc = new RookMovesCalculator(board,myPosition);
+                return rmc.pieceMoves();
+            case QUEEN: BishopMovesCalculator qmc = new BishopMovesCalculator(board,myPosition);
+                return qmc.pieceMoves();
+            case BISHOP: BishopMovesCalculator bmc = new BishopMovesCalculator(board,myPosition);
+                return bmc.pieceMoves();
+            case KNIGHT: BishopMovesCalculator knmc = new BishopMovesCalculator(board,myPosition);
+                return knmc.pieceMoves();
+            case null, default:
+                return null;
+        }
     }
 
     @Override
