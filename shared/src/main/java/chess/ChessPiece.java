@@ -54,7 +54,7 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         switch (type){
-            case KING: BishopMovesCalculator kmc = new BishopMovesCalculator(board,myPosition);
+            case KING: KingMovesCalculator kmc = new KingMovesCalculator(board,myPosition);
                 return kmc.pieceMoves();
             case PAWN: PawnMovesCalculator pmc = new PawnMovesCalculator(board,myPosition);
                 return pmc.pieceMoves();
@@ -64,7 +64,7 @@ public class ChessPiece {
                 return qmc.pieceMoves();
             case BISHOP: BishopMovesCalculator bmc = new BishopMovesCalculator(board,myPosition);
                 return bmc.pieceMoves();
-            case KNIGHT: BishopMovesCalculator knmc = new BishopMovesCalculator(board,myPosition);
+            case KNIGHT: KnightMovesCalculator knmc = new KnightMovesCalculator(board,myPosition);
                 return knmc.pieceMoves();
             case null, default:
                 return null;

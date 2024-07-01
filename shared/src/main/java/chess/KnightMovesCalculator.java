@@ -3,9 +3,9 @@ package chess;
 import java.util.Collection;
 import java.util.HashSet;
 
-public class KingMovesCalculator extends PieceMovesCalculator{
+public class KnightMovesCalculator extends PieceMovesCalculator{
 
-    public KingMovesCalculator(ChessBoard board, ChessPosition myPosition){
+    public KnightMovesCalculator(ChessBoard board, ChessPosition myPosition){
         super(board,myPosition);
     }
 
@@ -13,15 +13,15 @@ public class KingMovesCalculator extends PieceMovesCalculator{
     public Collection<ChessMove> pieceMoves(){
         HashSet<ChessMove> result = new HashSet<ChessMove>();
         //all diagonal directions
-        result.addAll(movesInOneDirection(1,1));
-        result.addAll(movesInOneDirection(-1,1));
-        result.addAll(movesInOneDirection(-1,-1));
-        result.addAll(movesInOneDirection(1,-1));
-        //all cardinal directions
-        result.addAll(movesInOneDirection(0,1));
-        result.addAll(movesInOneDirection(-1,0));
-        result.addAll(movesInOneDirection(0,-1));
-        result.addAll(movesInOneDirection(1,0));
+        result.addAll(movesInOneDirection(2,1));
+        result.addAll(movesInOneDirection(2,-1));
+        result.addAll(movesInOneDirection(-2,1));
+        result.addAll(movesInOneDirection(-2,-1));
+        result.addAll(movesInOneDirection(1,2));
+        result.addAll(movesInOneDirection(1,-2));
+        result.addAll(movesInOneDirection(-1,2));
+        result.addAll(movesInOneDirection(-1,-2));
+
         return result;
     }
 
@@ -37,5 +37,4 @@ public class KingMovesCalculator extends PieceMovesCalculator{
         }
         return result;
     }
-
 }

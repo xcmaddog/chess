@@ -62,5 +62,9 @@ public class ChessPosition {
     public int hashCode() {
         return Objects.hash(row, col);
     }
-    //can I see this in GitHub?
+
+    @Override
+    public String toString(){
+        return String.format("[%d,%d]",getRow(),getColumn());
+    }
 }

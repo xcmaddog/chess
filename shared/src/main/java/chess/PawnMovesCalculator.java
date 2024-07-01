@@ -60,7 +60,6 @@ public class PawnMovesCalculator extends PieceMovesCalculator{
     public HashSet<ChessMove> movesInOneDirection(int rowAdd, int colAdd) {
         HashSet<ChessMove> result = new HashSet<ChessMove>();
         ChessPosition aPosition = myPosition.getNextSquare(rowAdd,colAdd);
-        ChessPiece.PieceType promotion;
         if (aPosition.isOnBoard()){
             ChessPiece potentialPiece = board.getPiece(aPosition);
             if (potentialPiece==null || potentialPiece.getTeamColor()==opponentColor){ //if there isn't a piece there, or they are an opponent's piece
