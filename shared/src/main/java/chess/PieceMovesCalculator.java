@@ -4,10 +4,10 @@ import java.util.Collection;
 import java.util.HashSet;
 
 public class PieceMovesCalculator {
-    private final ChessBoard board;
-    private final ChessPosition myPosition;
-    private final ChessGame.TeamColor myColor;
-    private final ChessGame.TeamColor opponentColor;
+    public final ChessBoard board;
+    public final ChessPosition myPosition;
+    public final ChessGame.TeamColor myColor;
+    public final ChessGame.TeamColor opponentColor;
 
     public PieceMovesCalculator(ChessBoard board, ChessPosition myPosition) {
         this.board = board;
