@@ -149,7 +149,7 @@ public class ChessBoard {
     }
 
     @Override
-    protected Object clone() throws CloneNotSupportedException {
+    protected ChessBoard clone() {
         ChessBoard theCopy = new ChessBoard();
         for(int row = 1; row<=8; row++){
             for(int col = 1; col<=8; col++){

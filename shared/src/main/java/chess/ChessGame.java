@@ -112,7 +112,20 @@ public class ChessGame {
         we can make next turn end with us not in check
         */
         //check each possible move, if any of them end with us not in check, we are not in checkmate
-
+        //store the opponent's color as a variable
+        HashSet<ChessPosition> teamPieces = board.getTeamPieces(teamColor);
+        for (ChessPosition p: teamPieces){
+            Collection<ChessMove> movesOfThisPiece = board.getPiece(p).pieceMoves(board,p);
+            for(ChessMove m : movesOfThisPiece){
+                ChessBoard potentialFutureBoard = board.clone();
+                potentialFutureBoard.makeMove(m);
+                ChessGame potentialFutureGame = new ChessGame();
+                potentialFutureGame.setBoard(potentialFutureBoard);
+                if(!potentialFutureGame.isInCheck(teamColor)){
+                    return false;
+                }
+            }
+        }
         return true;
     }
 
