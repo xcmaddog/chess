@@ -9,12 +9,13 @@ public class RookMovesCalculator extends PieceMovesCalculator{
         super(board,myPosition);
     }
 
-    @Override public Collection<ChessMove> pieceMoves() {
+    @Override
+    public HashSet<ChessMove> pieceMoves(){
         HashSet<ChessMove> result = new HashSet<ChessMove>();
-        result.addAll(movesInOneDirection(0,1));
-        result.addAll(movesInOneDirection(-1,0));
-        result.addAll(movesInOneDirection(0,-1));
-        result.addAll(movesInOneDirection(1,0));
+        result.addAll(longMove(1,0));
+        result.addAll(longMove(0,1));
+        result.addAll(longMove(-1,0));
+        result.addAll(longMove(0,-1));
         return result;
     }
 

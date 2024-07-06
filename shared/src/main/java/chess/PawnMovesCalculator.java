@@ -31,7 +31,7 @@ public class PawnMovesCalculator extends PieceMovesCalculator{
 
     }
     @Override
-    public Collection<ChessMove> pieceMoves(){
+    public HashSet<ChessMove> pieceMoves(){
         HashSet<ChessMove> result = new HashSet<ChessMove>();
         //straight
         if (myPosition.getRow()==startingRow) { // double move
@@ -56,7 +56,6 @@ public class PawnMovesCalculator extends PieceMovesCalculator{
         return result;
     }
 
-    @Override
     public HashSet<ChessMove> movesInOneDirection(int rowAdd, int colAdd) {
         HashSet<ChessMove> result = new HashSet<ChessMove>();
         ChessPosition aPosition = myPosition.getNextSquare(rowAdd,colAdd);

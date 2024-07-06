@@ -10,31 +10,17 @@ public class KingMovesCalculator extends PieceMovesCalculator{
     }
 
     @Override
-    public Collection<ChessMove> pieceMoves(){
+    public HashSet<ChessMove> pieceMoves(){
         HashSet<ChessMove> result = new HashSet<ChessMove>();
-        //all diagonal directions
-        result.addAll(movesInOneDirection(1,1));
-        result.addAll(movesInOneDirection(-1,1));
-        result.addAll(movesInOneDirection(-1,-1));
-        result.addAll(movesInOneDirection(1,-1));
-        //all cardinal directions
-        result.addAll(movesInOneDirection(0,1));
-        result.addAll(movesInOneDirection(-1,0));
-        result.addAll(movesInOneDirection(0,-1));
-        result.addAll(movesInOneDirection(1,0));
-        return result;
-    }
+        result.addAll(oneMove(1,0));
+        result.addAll(oneMove(0,1));
+        result.addAll(oneMove(-1,0));
+        result.addAll(oneMove(0,-1));
 
-    @Override
-    public HashSet<ChessMove> movesInOneDirection(int rowAdd, int colAdd){
-        HashSet<ChessMove> result = new HashSet<ChessMove>();
-        ChessPosition aPosition = myPosition.getNextSquare(rowAdd,colAdd);
-        if (aPosition.isOnBoard()){
-            ChessPiece potentialPiece = board.getPiece(aPosition);
-            if (potentialPiece==null || potentialPiece.getTeamColor()==opponentColor){ //if there isn't a piece there, or they are an opponent's piece
-                result.add(new ChessMove(myPosition, aPosition));
-            }
-        }
+        result.addAll(oneMove(1,1));
+        result.addAll(oneMove(-1,1));
+        result.addAll(oneMove(-1,-1));
+        result.addAll(oneMove(1,-1));
         return result;
     }
 
