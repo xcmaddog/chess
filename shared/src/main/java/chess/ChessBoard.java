@@ -147,4 +147,19 @@ public class ChessBoard {
     public int hashCode() {
         return Objects.hashCode(pieces);
     }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        ChessBoard theCopy = new ChessBoard();
+        for(int row = 1; row<=8; row++){
+            for(int col = 1; col<=8; col++){
+                ChessPosition aPosition = new ChessPosition(row,col);
+                ChessPiece potentialPiece = pieces.get(aPosition);
+                if(potentialPiece != null){
+                    theCopy.addPiece(aPosition,potentialPiece);
+                }
+            }
+        }
+        return theCopy;
+    }
 }
