@@ -13,6 +13,8 @@ import java.util.Objects;
 public class ChessBoard {
 
     private HashMap<ChessPosition,ChessPiece> pieces;
+    private ChessPosition blackKingPosition;
+    private ChessPosition whiteKingPosition;
 
     public ChessBoard() {
         pieces = HashMap.newHashMap(64);
@@ -26,6 +28,13 @@ public class ChessBoard {
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
         pieces.put(position,piece);
+        if(piece.getPieceType() == ChessPiece.PieceType.KING){
+            if(piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                blackKingPosition = position;
+            }else{
+                whiteKingPosition = position;
+            }
+        }
     }
 
     /**
@@ -82,6 +91,28 @@ public class ChessBoard {
         this.addPiece(new ChessPosition(8,4), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN));
         //king
         this.addPiece(new ChessPosition(8,5), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING));
+    }
+
+    public HashSet<ChessPosition> getTeamPieces(ChessGame.TeamColor color){
+        HashSet<ChessPosition> result = new HashSet<ChessPosition>();
+        for(int row = 1; row<=8; row++){
+            for(int col = 1; col<=8; col++){
+                ChessPosition aPosition = new ChessPosition(row,col);
+                ChessPiece potentialPiece = pieces.get(aPosition);
+                if(potentialPiece != null && potentialPiece.getTeamColor() == color){
+                    result.add(aPosition);
+                }
+            }
+        }
+        return result;
+    }
+
+    public ChessPosition getKingPosition(ChessGame.TeamColor color){
+        if (color == ChessGame.TeamColor.WHITE){
+            return whiteKingPosition;
+        }else {
+            return blackKingPosition;
+        }
     }
 
     @Override
