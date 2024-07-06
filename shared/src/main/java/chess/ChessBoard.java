@@ -44,65 +44,44 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        //set the white side
-        //set the pawns
-        ChessPosition aPosition = new ChessPosition(2,1);
-        while(aPosition.isOnBoard()){
-            addPiece(aPosition,new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN));
-            aPosition = new ChessPosition(2, aPosition.getColumn()+1);
+        pieces = HashMap.newHashMap(64);
+        //white side
+        //pawns
+        for(int i = 1;i<=8;i++){
+            this.addPiece(new ChessPosition(2,i), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN));
         }
-        //set the rooks
-        aPosition = new ChessPosition(1,1);
-        addPiece(aPosition,new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK));
-        aPosition = new ChessPosition(1,8);
-        addPiece(aPosition,new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK));
-        //set the knights
-        aPosition = new ChessPosition(1,2);
-        addPiece(aPosition,new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT));
-        aPosition = new ChessPosition(1,7);
-        addPiece(aPosition,new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT));
-        //set the bishops
-        aPosition = new ChessPosition(1,3);
-        addPiece(aPosition,new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP));
-        aPosition = new ChessPosition(1,6);
-        addPiece(aPosition,new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP));
-        //set the queen
-        aPosition = new ChessPosition(1,4);
-        addPiece(aPosition,new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN));
-        //set the king
-        aPosition = new ChessPosition(1,5);
-        addPiece(aPosition,new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING));
+        //rooks
+        this.addPiece(new ChessPosition(1,1), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK));
+        this.addPiece(new ChessPosition(1,8), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK));
+        //knights
+        this.addPiece(new ChessPosition(1,2), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT));
+        this.addPiece(new ChessPosition(1,7), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT));
+        //bishops
+        this.addPiece(new ChessPosition(1,3), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP));
+        this.addPiece(new ChessPosition(1,6), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP));
+        //queen
+        this.addPiece(new ChessPosition(1,4), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN));
+        //king
+        this.addPiece(new ChessPosition(1,5), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING));
 
-        //set the black side
-        //set the pawns
-        aPosition = new ChessPosition(7,1);
-        while(aPosition.isOnBoard()){
-            addPiece(aPosition,new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN));
-            aPosition = new ChessPosition(7, aPosition.getColumn()+1);
+        //black side
+        //pawns
+        for(int i = 1;i<=8;i++){
+            this.addPiece(new ChessPosition(7,i), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN));
         }
-        //set the rooks
-        aPosition = new ChessPosition(8,1);
-        addPiece(aPosition,new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK));
-        aPosition = new ChessPosition(8,8);
-        addPiece(aPosition,new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK));
-        //set the knights
-        aPosition = new ChessPosition(8,2);
-        addPiece(aPosition,new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT));
-        aPosition = new ChessPosition(8,7);
-        addPiece(aPosition,new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT));
-        //set the bishops
-        aPosition = new ChessPosition(8,3);
-        addPiece(aPosition,new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP));
-        aPosition = new ChessPosition(8,6);
-        addPiece(aPosition,new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP));
-        //set the queen
-        aPosition = new ChessPosition(8,4);
-        addPiece(aPosition,new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN));
-        //set the king
-        aPosition = new ChessPosition(8,5);
-        addPiece(aPosition,new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING));
-
-        //might need to clear the rest of the board too...
+        //rooks
+        this.addPiece(new ChessPosition(8,1), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK));
+        this.addPiece(new ChessPosition(8,8), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK));
+        //knights
+        this.addPiece(new ChessPosition(8,2), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT));
+        this.addPiece(new ChessPosition(8,7), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT));
+        //bishops
+        this.addPiece(new ChessPosition(8,3), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP));
+        this.addPiece(new ChessPosition(8,6), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP));
+        //queen
+        this.addPiece(new ChessPosition(8,4), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN));
+        //king
+        this.addPiece(new ChessPosition(8,5), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING));
     }
 
     @Override
