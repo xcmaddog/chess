@@ -73,14 +73,18 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
+        //store the opponent's color as a variable
         TeamColor opponentColor;
         if(teamColor == TeamColor.WHITE){
             opponentColor = TeamColor.BLACK;
         } else {
             opponentColor = TeamColor.WHITE;
         }
+        //get a HashSet of all the opponent's pieces
         HashSet<ChessPosition> opponentTeamPieces = board.getTeamPieces(opponentColor);
+        //get the position of our king
         ChessPosition kingPosition = board.getKingPosition(teamColor);
+        //see if any of the moves that any of the enemy team pieces can make can take out the king
         for(ChessPosition p : opponentTeamPieces){
             Collection<ChessMove> someMoves = board.getPiece(p).pieceMoves(board,p);
             for(ChessMove m : someMoves){
@@ -89,6 +93,7 @@ public class ChessGame {
                 }
             }
         }
+        //if none of them can, we are not in check
         return false;
     }
 
@@ -99,7 +104,16 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        // first, check if we are in check
+        if(!isInCheck(teamColor)){
+            return false;
+        }
+        /* if we are in check, then we will be in checkmate if none of the moves
+        we can make next turn end with us not in check
+        */
+        //check each possible move, if any of them end with us not in check, we are not in checkmate
+
+        return true;
     }
 
     /**

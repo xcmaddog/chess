@@ -115,6 +115,26 @@ public class ChessBoard {
         }
     }
 
+    private void removePiece(ChessPosition position){
+        pieces.remove(position);
+    }
+
+    public void makeMove(ChessMove move){
+        ChessPosition endPosition = move.getEndPosition();
+        ChessPosition startPosition = move.getStartPosition();
+        ChessGame.TeamColor color = pieces.get(startPosition).getTeamColor();
+        ChessPiece.PieceType type = pieces.get(startPosition).getPieceType();
+        removePiece(endPosition);
+        removePiece(startPosition);
+        if(move.getPromotionPiece() != null){
+            ChessPiece promotedPiece = new ChessPiece(color,move.getPromotionPiece());
+            addPiece(endPosition,promotedPiece);
+        } else{
+            ChessPiece copyPiece = new ChessPiece(color,type);
+            addPiece(endPosition,copyPiece);
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
