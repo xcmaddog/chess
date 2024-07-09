@@ -200,6 +200,8 @@ public class ChessGame {
         return board;
     }
 
-    private boolean canCastle (){}
+    private boolean canCastle (){
+        return false;
+    }
 
 }
