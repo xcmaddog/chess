@@ -13,10 +13,12 @@ public class ChessPiece {
 
     private final ChessGame.TeamColor pieceColor;
     private final ChessPiece.PieceType type;
+    boolean hasMoved;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.pieceColor = pieceColor;
         this.type = type;
+        this.hasMoved = false;
     }
 
     /**
@@ -43,6 +45,14 @@ public class ChessPiece {
      */
     public PieceType getPieceType() {
         return type;
+    }
+
+    public void markMoved(){
+        hasMoved = true;
+    }
+
+    public boolean neverMoved(){
+        return !hasMoved;
     }
 
     /**
@@ -82,5 +92,10 @@ public class ChessPiece {
     @Override
     public int hashCode() {
         return Objects.hash(pieceColor, type);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s %s",pieceColor.toString(),type.toString());
     }
 }

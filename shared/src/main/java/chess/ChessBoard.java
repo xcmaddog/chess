@@ -45,7 +45,10 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        return pieces.get(position);
+        if (pieces.containsKey(position)){
+            return pieces.get(position);
+        }
+        return null;
     }
 
     /**
@@ -128,9 +131,11 @@ public class ChessBoard {
         removePiece(startPosition);
         if(move.getPromotionPiece() != null){
             ChessPiece promotedPiece = new ChessPiece(color,move.getPromotionPiece());
+            promotedPiece.markMoved();
             addPiece(endPosition,promotedPiece);
         } else{
             ChessPiece copyPiece = new ChessPiece(color,type);
+            copyPiece.markMoved();
             addPiece(endPosition,copyPiece);
         }
     }
