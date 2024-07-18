@@ -1,6 +1,9 @@
-package chess;
+package chess.moveCalculators;
 
-import java.util.Collection;
+import chess.ChessBoard;
+import chess.ChessMove;
+import chess.ChessPosition;
+
 import java.util.HashSet;
 
 public class KnightMovesCalculator extends PieceMovesCalculator{

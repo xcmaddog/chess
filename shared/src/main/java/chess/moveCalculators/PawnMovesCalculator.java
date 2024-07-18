@@ -1,6 +1,7 @@
-package chess;
+package chess.moveCalculators;
 
-import java.util.Collection;
+import chess.*;
+
 import java.util.HashSet;
 
 import static chess.ChessPiece.PieceType.*;

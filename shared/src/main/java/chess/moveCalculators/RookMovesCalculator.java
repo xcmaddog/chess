@@ -1,11 +1,14 @@
-package chess;
+package chess.moveCalculators;
 
-import java.util.Collection;
+import chess.ChessBoard;
+import chess.ChessMove;
+import chess.ChessPosition;
+
 import java.util.HashSet;
 
-public class QueenMovesCalculator extends PieceMovesCalculator{
+public class RookMovesCalculator extends PieceMovesCalculator{
 
-    public QueenMovesCalculator(ChessBoard board, ChessPosition myPosition) {
+    public RookMovesCalculator(ChessBoard board, ChessPosition myPosition) {
         super(board,myPosition);
     }
 
@@ -16,11 +19,8 @@ public class QueenMovesCalculator extends PieceMovesCalculator{
         result.addAll(longMove(0,1));
         result.addAll(longMove(-1,0));
         result.addAll(longMove(0,-1));
-
-        result.addAll(longMove(1,1));
-        result.addAll(longMove(-1,1));
-        result.addAll(longMove(-1,-1));
-        result.addAll(longMove(1,-1));
         return result;
     }
+
+
 }
