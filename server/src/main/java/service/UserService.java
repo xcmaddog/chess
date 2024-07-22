@@ -19,15 +19,20 @@ public class UserService extends Service{
         super(userDAO, gameDAO, authDAO);
     }
 
-    public RegisterResult register(RegisterRequest registerRequest){
+    public UserService (){}
 
+    public RegisterResult register(RegisterRequest registerRequest){
+        RegisterResult dummyResult = new RegisterResult("hi","hi");
+        return dummyResult;
     }
 
     public LoginResult login(LoginRequest loginRequest) {
-
+        LoginResult dummyResult = new LoginResult("hi","hi");
+        return dummyResult;
     }
 
     public LogoutResult logout(LogoutRequest logoutRequest){
-
+        LogoutResult dummyResult = new LogoutResult();
+        return dummyResult;
     }
 }
