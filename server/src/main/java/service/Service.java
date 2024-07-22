@@ -4,6 +4,8 @@ import dataAccess.AuthDAO;
 import dataAccess.GameDAO;
 import dataAccess.UserDAO;
 import model.AuthData;
+import model.UserData;
+import model.GameData;
 
 public class Service {
 
