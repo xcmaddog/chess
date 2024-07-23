@@ -21,11 +21,6 @@ public class UserService extends Service{
         super(userDAO, gameDAO, authDAO);
     }
 
-    public UserService (UserDAO userDAO,AuthDAO authDAO) {
-        this.setUserDAO(userDAO);
-        this.setAuthDAO(authDAO);
-    }
-
     public RegisterResult register(RegisterRequest registerRequest) throws dataaccess.DataAccessException {
         String username = registerRequest.getUsername();
         if (super.userDAO.getUser(username) == null){

@@ -1,6 +1,7 @@
 package service;
 
 import dataAccess.MemoryAuthDAO;
+import dataAccess.MemoryGameDAO;
 import dataAccess.MemoryUserDAO;
 import model.UserData;
 import org.junit.jupiter.api.Test;
@@ -19,9 +20,10 @@ class UserServiceTest {
     void register() throws dataaccess.DataAccessException {
         MemoryUserDAO memoryUserDAO = new MemoryUserDAO();
         MemoryAuthDAO memoryAuthDAO = new MemoryAuthDAO();
+        MemoryGameDAO memoryGameDAO = new MemoryGameDAO();
         UserData firstUser = new UserData("JoeBob", "IcannotThink", "joebob@gmail.com");
         memoryUserDAO.createUser(firstUser);
-        UserService userService = new UserService(memoryUserDAO, memoryAuthDAO);
+        UserService userService = new UserService(memoryUserDAO, memoryGameDAO, memoryAuthDAO);
         //userService.setUserDAO(memoryUserDAO);
 
         RegisterRequest registerRequest = new RegisterRequest("JillSmith", "ConfidentPassword",
@@ -37,9 +39,10 @@ class UserServiceTest {
     void login() throws dataaccess.DataAccessException {
         MemoryUserDAO memoryUserDAO = new MemoryUserDAO();
         MemoryAuthDAO memoryAuthDAO = new MemoryAuthDAO();
+        MemoryGameDAO memoryGameDAO = new MemoryGameDAO();
         UserData firstUser = new UserData("JoeBob", "IcannotThink", "joebob@gmail.com");
         memoryUserDAO.createUser(firstUser);
-        UserService userService = new UserService(memoryUserDAO, memoryAuthDAO);
+        UserService userService = new UserService(memoryUserDAO, memoryGameDAO, memoryAuthDAO);
         //userService.setUserDAO(memoryUserDAO);
 
         LoginRequest loginRequest = new LoginRequest("JoeBob", "IcannotThink");
@@ -55,9 +58,10 @@ class UserServiceTest {
     void logout() throws dataaccess.DataAccessException {
         MemoryUserDAO memoryUserDAO = new MemoryUserDAO();
         MemoryAuthDAO memoryAuthDAO = new MemoryAuthDAO();
+        MemoryGameDAO memoryGameDAO = new MemoryGameDAO();
         UserData firstUser = new UserData("JoeBob", "IcannotThink", "joebob@gmail.com");
         memoryUserDAO.createUser(firstUser);
-        UserService userService = new UserService(memoryUserDAO, memoryAuthDAO);
+        UserService userService = new UserService(memoryUserDAO, memoryGameDAO, memoryAuthDAO);
         //userService.setUserDAO(memoryUserDAO);
 
         LoginRequest loginRequest = new LoginRequest("JoeBob", "IcannotThink");

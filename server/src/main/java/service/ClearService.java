@@ -16,6 +16,9 @@ public class ClearService extends Service{
         userDAO.clear();
         gameDAO.clear();
         authDAO.clear();
+
+        System.out.println("You made it to the clearAll function in ClearService");
+
         ClearResult clearResult = new ClearResult();
         return clearResult;
     }
