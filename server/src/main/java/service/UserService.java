@@ -21,17 +21,17 @@ public class UserService extends Service{
 
     public UserService (){}
 
-    public RegisterResult register(RegisterRequest registerRequest){
+    public RegisterResult register(RegisterRequest registerRequest) throws dataaccess.DataAccessException {
         RegisterResult dummyResult = new RegisterResult("hi","hi");
         return dummyResult;
     }
 
-    public LoginResult login(LoginRequest loginRequest) {
+    public LoginResult login(LoginRequest loginRequest) throws dataaccess.DataAccessException{
         LoginResult dummyResult = new LoginResult("hi","hi");
         return dummyResult;
     }
 
-    public LogoutResult logout(LogoutRequest logoutRequest){
+    public LogoutResult logout(LogoutRequest logoutRequest) throws dataaccess.DataAccessException {
         LogoutResult dummyResult = new LogoutResult();
         return dummyResult;
     }
