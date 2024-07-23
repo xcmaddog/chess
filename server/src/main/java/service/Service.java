@@ -6,9 +6,9 @@ import dataAccess.UserDAO;
 
 public class Service {
 
-    private UserDAO userDAO;
-    private GameDAO gameDAO;
-    private AuthDAO authDAO;
+    protected UserDAO userDAO;
+    protected GameDAO gameDAO;
+    protected AuthDAO authDAO;
 
     public Service (){}
 

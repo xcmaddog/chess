@@ -8,7 +8,9 @@ public class MemoryAuthDAO implements AuthDAO{
 
    HashMap<String, AuthData> Auths;
 
-    public MemoryAuthDAO (){}
+    public MemoryAuthDAO (){
+        Auths = new HashMap<String, AuthData>();
+    }
 
     public void createAuth(AuthData authData){
         String authToken = authData.authToken();

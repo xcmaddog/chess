@@ -11,7 +11,9 @@ import result.LogoutResult;
 import result.RegisterResult;
 import model.AuthData;
 import model.UserData;
-import model.GameData;
+
+import java.util.Objects;
+import java.util.UUID;
 
 public class UserService extends Service{
 
@@ -19,16 +21,42 @@ public class UserService extends Service{
         super(userDAO, gameDAO, authDAO);
     }
 
-    public UserService (){}
+    public UserService (UserDAO userDAO,AuthDAO authDAO) {
+        this.setUserDAO(userDAO);
+        this.setAuthDAO(authDAO);
+    }
 
     public RegisterResult register(RegisterRequest registerRequest) throws dataaccess.DataAccessException {
-        RegisterResult dummyResult = new RegisterResult("hi","hi");
-        return dummyResult;
+        String username = registerRequest.getUsername();
+        if (super.userDAO.getUser(username) == null){
+            UserData userData = new UserData(username, registerRequest.getPassword(), registerRequest.getEmail());
+            userDAO.createUser(userData);
+            String authToken = UUID.randomUUID().toString();
+            AuthData authData = new AuthData(authToken,username);
+            authDAO.createAuth(authData);
+            RegisterResult registerResult = new RegisterResult(username, authToken);
+            return registerResult;
+        } else {
+            throw new dataaccess.DataAccessException("A user with that username already exists");
+        }
     }
 
     public LoginResult login(LoginRequest loginRequest) throws dataaccess.DataAccessException{
-        LoginResult dummyResult = new LoginResult("hi","hi");
-        return dummyResult;
+        String username = loginRequest.getUsername();
+        UserData userData = userDAO.getUser(username);
+        if (userData != null){
+            if (Objects.equals(userData.password(), loginRequest.getPassword())){
+                String authToken = UUID.randomUUID().toString();
+                AuthData authData = new AuthData(authToken,username);
+                authDAO.createAuth(authData);
+                LoginResult loginResult = new LoginResult(username,authToken);
+                return loginResult;
+            }else {
+                throw new dataaccess.DataAccessException("The password provided was incorrect");
+            }
+        } else {
+            throw new dataaccess.DataAccessException("The username provided is invalid");
+        }
     }
 
     public LogoutResult logout(LogoutRequest logoutRequest) throws dataaccess.DataAccessException {
