@@ -42,4 +42,9 @@ public class MemoryGameDAO implements GameDAO{
     public void clear(){
         Games.clear();
     }
+
+    @Override
+    public boolean isEmpty() {
+        return Games.isEmpty();
+    }
 }

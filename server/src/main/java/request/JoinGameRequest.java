@@ -1,32 +1,26 @@
 package request;
 
+import chess.ChessGame;
+
 import java.util.Objects;
 
 public class JoinGameRequest {
 
     private final String authToken;
-    private String playerColor;
+    private final ChessGame.TeamColor playerColor;
     private final int gameID;
 
-    public JoinGameRequest(String authToken, String playerColor, int gameID) throws Exception {
+    public JoinGameRequest(String authToken, ChessGame.TeamColor playerColor, int gameID){
         this.authToken = authToken;
-        setPlayerColor(playerColor);
+        this.playerColor = playerColor;
         this.gameID = gameID;
-    }
-
-    private void setPlayerColor(String playerColor) throws Exception {
-        if (!(Objects.equals(playerColor, "black") || Objects.equals(playerColor, "white"))){
-            throw new Exception("player color was not valid");
-        } else {
-            this.playerColor = playerColor;
-        }
     }
 
     public String getAuthToken() {
         return authToken;
     }
 
-    public String getPlayerColor() {
+    public ChessGame.TeamColor getPlayerColor() {
         return playerColor;
     }
 

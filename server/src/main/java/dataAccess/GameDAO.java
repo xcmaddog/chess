@@ -12,4 +12,5 @@ public interface GameDAO {
     public Collection<GameInfo> listGameInfo();
     public void updateGame(GameData gameData);
     public void clear();
+    public boolean isEmpty();
 }
