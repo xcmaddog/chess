@@ -3,6 +3,7 @@ package service;
 import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessPosition;
+import chess.InvalidMoveException;
 import dataAccess.MemoryAuthDAO;
 import dataAccess.MemoryGameDAO;
 import dataAccess.MemoryUserDAO;
@@ -10,13 +11,14 @@ import model.AuthData;
 import model.GameData;
 import model.UserData;
 import org.junit.jupiter.api.Test;
+import request.ClearRequest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ClearServiceTest {
 
     @Test
-    void clearAll() {
+    void clearAll() throws InvalidMoveException {
         MemoryUserDAO memoryUserDAO = new MemoryUserDAO();
         MemoryAuthDAO memoryAuthDAO = new MemoryAuthDAO();
         MemoryGameDAO memoryGameDAO = new MemoryGameDAO();
@@ -40,5 +42,13 @@ class ClearServiceTest {
         GameData oneGame = new GameData(1234,"TheGame", new ChessGame());
         memoryGameDAO.createGame(thisGame);
         memoryGameDAO.createGame(oneGame);
+
+        ClearService clearService = new ClearService(memoryUserDAO,memoryGameDAO,memoryAuthDAO);
+        ClearRequest clearRequest = new ClearRequest();
+        clearService.clearAll(clearRequest);
+
+        assertTrue(memoryUserDAO.isEmpty());
+        assertTrue(memoryGameDAO.isEmpty());
+        assertTrue(memoryAuthDAO.isEmpty());
     }
 }
