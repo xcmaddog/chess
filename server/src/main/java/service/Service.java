@@ -10,8 +10,6 @@ public class Service {
     protected GameDAO gameDAO;
     protected AuthDAO authDAO;
 
-    public Service (){}
-
     public Service (UserDAO userDAO, GameDAO gameDAO, AuthDAO authDAO){
         this.userDAO = userDAO;
         this.gameDAO = gameDAO;
