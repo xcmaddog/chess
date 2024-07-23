@@ -60,7 +60,14 @@ public class UserService extends Service{
     }
 
     public LogoutResult logout(LogoutRequest logoutRequest) throws dataaccess.DataAccessException {
-        LogoutResult dummyResult = new LogoutResult();
-        return dummyResult;
+        String authToken = logoutRequest.getAuthToken();
+        if (isAuthorized(authToken)){
+            //log them out
+            authDAO.deleteAuth(authToken);
+            LogoutResult logoutResult = new LogoutResult();
+            return logoutResult;
+        } else {
+            throw new dataaccess.DataAccessException("The authToken was not recognized");
+        }
     }
 }
