@@ -4,26 +4,26 @@ import java.util.Objects;
 
 public class RegisterRequest {
 
-    private final String Username;
-    private final String Password;
-    private final String Email;
+    private final String username;
+    private final String password;
+    private final String email;
 
     public RegisterRequest (String username, String password, String email){
-        this.Username = username;
-        this.Password = password;
-        this.Email = email;
+        this.username = username;
+        this.password = password;
+        this.email = email;
     }
 
     public String getUsername() {
-        return Username;
+        return username;
     }
 
     public String getPassword() {
-        return Password;
+        return password;
     }
 
     public String getEmail() {
-        return Email;
+        return email;
     }
 
     @Override
@@ -31,11 +31,20 @@ public class RegisterRequest {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         RegisterRequest that = (RegisterRequest) o;
-        return Objects.equals(Username, that.Username) && Objects.equals(Password, that.Password) && Objects.equals(Email, that.Email);
+        return Objects.equals(username, that.username) && Objects.equals(password, that.password) && Objects.equals(email, that.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(Username, Password, Email);
+        return Objects.hash(username, password, email);
+    }
+
+    @Override
+    public String toString() {
+        return "RegisterRequest{" +
+                "Username='" + username + '\'' +
+                ", Password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

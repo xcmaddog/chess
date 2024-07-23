@@ -22,7 +22,7 @@ public class ClearHandler {
 
     public String handleClearAll(){
 
-        System.out.println("You made it to the handleClearAll function");
+        //System.out.println("You made it to the handleClearAll function");
 
         var serializer = new Gson();
 
