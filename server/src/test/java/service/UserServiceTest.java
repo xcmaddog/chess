@@ -63,7 +63,7 @@ class UserServiceTest {
         LoginRequest loginRequest = new LoginRequest("JoeBob", "IcannotThink");
         LoginResult loginResult = userService.login(loginRequest);
 
-        LogoutRequest logoutRequest = new LogoutRequest(loginResult.getAuthToken());
+        LogoutRequest logoutRequest = new LogoutRequest(loginResult.authToken());
         LogoutResult expected = new LogoutResult();
         assertEquals(expected, userService.logout(logoutRequest)); //successful logout
 

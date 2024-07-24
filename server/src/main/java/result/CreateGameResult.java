@@ -1,18 +1,6 @@
 package result;
 
-import java.util.Objects;
-
-public class CreateGameResult {
-
-    private final int gameID;
-
-    public CreateGameResult(int gameID){
-        this.gameID = gameID;
-    }
-
-    public int getGameID() {
-        return gameID;
-    }
+public record CreateGameResult(int gameID) {
 
     @Override
     public boolean equals(Object o) {
@@ -22,8 +10,4 @@ public class CreateGameResult {
         return gameID == that.gameID;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(gameID);
-    }
 }
