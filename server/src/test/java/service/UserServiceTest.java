@@ -38,38 +38,47 @@ class UserServiceTest {
         RegisterRequest registerRequest = new RegisterRequest("JillSmith", "ConfidentPassword",
                 "jill2002@yahoo.com");
         assertTrue(userService.register(registerRequest) instanceof RegisterResult);// a new user was made
-
-        registerRequest = new RegisterRequest("JoeBob","IcannotThink", "joebob@gmail.com");
-        RegisterRequest finalRegisterRequest = registerRequest;
-        assertThrows(dataaccess.DataAccessException.class, () -> userService.register(finalRegisterRequest));//a new user was not made
     }
 
     @Test
-    void registerNegative() throws dataaccess.DataAccessException {}
+    void registerNegative() throws dataaccess.DataAccessException {
+        RegisterRequest registerRequest = new RegisterRequest("JoeBob","IcannotThink",
+                "joebob@gmail.com");
+        RegisterRequest finalRegisterRequest = registerRequest;
+        //a new user was not made
+        assertThrows(dataaccess.DataAccessException.class, () -> userService.register(finalRegisterRequest));
+    }
 
     @Test
-    void login() throws dataaccess.DataAccessException {
+    void loginPositive() throws dataaccess.DataAccessException {
         LoginRequest loginRequest = new LoginRequest("JoeBob", "IcannotThink");
         assertTrue(userService.login(loginRequest) instanceof LoginResult); // successful login
 
+    }
+    @Test
+    void loginNegative() throws dataaccess.DataAccessException {
+        LoginRequest loginRequest = new LoginRequest("JoeBob", "IcannotThink");
         loginRequest = new LoginRequest("JoeBob", "IThinkThereforeIAm");
         LoginRequest finalLoginRequest = loginRequest;
         assertThrows(dataaccess.DataAccessException.class, ()-> userService.login(finalLoginRequest));//failed to log in
-
     }
 
     @Test
-    void logout() throws dataaccess.DataAccessException {
+    void logoutPositive() throws dataaccess.DataAccessException {
         LoginRequest loginRequest = new LoginRequest("JoeBob", "IcannotThink");
         LoginResult loginResult = userService.login(loginRequest);
 
         LogoutRequest logoutRequest = new LogoutRequest(loginResult.authToken());
         LogoutResult expected = new LogoutResult();
         assertEquals(expected, userService.logout(logoutRequest)); //successful logout
+    }
+    @Test
+    void logoutNegative() throws dataaccess.DataAccessException {
+        LoginRequest loginRequest = new LoginRequest("JoeBob", "IcannotThink");
+        LoginResult loginResult = userService.login(loginRequest);
 
-        logoutRequest = new LogoutRequest("ILikePie");
+        LogoutRequest logoutRequest = new LogoutRequest("ILikePie");
         LogoutRequest finalLogoutRequest = logoutRequest;
         assertThrows(dataaccess.DataAccessException.class, ()-> userService.logout(finalLogoutRequest));//fail to logout
-
     }
 }
