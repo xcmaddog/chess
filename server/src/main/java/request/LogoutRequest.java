@@ -6,8 +6,12 @@ public record LogoutRequest(String authToken) {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         LogoutRequest that = (LogoutRequest) o;
         return Objects.equals(authToken, that.authToken);
     }
