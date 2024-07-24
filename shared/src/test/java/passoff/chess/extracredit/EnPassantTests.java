@@ -191,7 +191,7 @@ public class EnPassantTests {
 		        | | | | | | | |p|
 		        | | | | | | | | |
 		        | | | | | | | | |
-                """);
+          """);
         ChessGame game = new ChessGame();
         game.setBoard(board);
         game.setTeamTurn(ChessGame.TeamColor.BLACK);

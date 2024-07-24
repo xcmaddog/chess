@@ -24,7 +24,7 @@ public class PawnMovesCalculator extends PieceMovesCalculator{
             startingRow = 7;
             promotionRow = 1;
         }
-        promotionTypes = new HashSet<ChessPiece.PieceType>();
+        promotionTypes = new HashSet<>();
         promotionTypes.add(QUEEN);
         promotionTypes.add(ROOK);
         promotionTypes.add(BISHOP);
@@ -33,7 +33,7 @@ public class PawnMovesCalculator extends PieceMovesCalculator{
     }
     @Override
     public HashSet<ChessMove> pieceMoves(){
-        HashSet<ChessMove> result = new HashSet<ChessMove>();
+        HashSet<ChessMove> result = new HashSet<>();
         //straight
         if (myPosition.getRow()==startingRow) { // double move
             if (board.getPiece(myPosition.getNextSquare(forwards,0)) == null
@@ -58,7 +58,7 @@ public class PawnMovesCalculator extends PieceMovesCalculator{
     }
 
     public HashSet<ChessMove> movesInOneDirection(int rowAdd, int colAdd) {
-        HashSet<ChessMove> result = new HashSet<ChessMove>();
+        HashSet<ChessMove> result = new HashSet<>();
         ChessPosition aPosition = myPosition.getNextSquare(rowAdd,colAdd);
         if (aPosition.isOnBoard()){
             ChessPiece potentialPiece = board.getPiece(aPosition);

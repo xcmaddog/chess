@@ -6,10 +6,10 @@ import java.util.HashMap;
 
 public class MemoryAuthDAO implements AuthDAO{
 
-   HashMap<String, AuthData> Auths;
+   final HashMap<String, AuthData> Auths;
 
     public MemoryAuthDAO (){
-        Auths = new HashMap<String, AuthData>();
+        Auths = new HashMap<>();
     }
 
     public void createAuth(AuthData authData){

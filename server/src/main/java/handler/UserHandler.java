@@ -14,8 +14,8 @@ import service.UserService;
 
 public class UserHandler {
 
-    private Gson serializer;
-    private UserService userService;
+    private final Gson serializer;
+    private final UserService userService;
 
     public UserHandler(UserDAO userDAO, GameDAO gameDAO, AuthDAO authDAO) {
         this.serializer = new Gson();
@@ -27,9 +27,6 @@ public class UserHandler {
 
         //turn the JSON fom the server into a RegisterRequest object
         RegisterRequest registerRequest =  serializer.fromJson(jsonFromServer, RegisterRequest.class);
-
-        //System.out.println("You are in the UserHandler handleRegistration method and just created this:");
-        //System.out.println(registerRequest.toString());
 
         if(registerRequest.username() == null){
             throw new dataaccess.DataAccessException("username not provided");

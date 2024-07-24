@@ -26,18 +26,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GamesServiceTest {
 
-    private MemoryUserDAO memoryUserDAO;
-    private MemoryAuthDAO memoryAuthDAO;
-    private MemoryGameDAO memoryGameDAO;
     private GameData thisGame;
     private GameData oneGame;
     private GamesService gameService;
 
     @BeforeEach
     void setUp() throws InvalidMoveException {
-        memoryUserDAO = new MemoryUserDAO();
-        memoryAuthDAO = new MemoryAuthDAO();
-        memoryGameDAO = new MemoryGameDAO();
+        MemoryUserDAO memoryUserDAO = new MemoryUserDAO();
+        MemoryAuthDAO memoryAuthDAO = new MemoryAuthDAO();
+        MemoryGameDAO memoryGameDAO = new MemoryGameDAO();
 
         UserData firstUser = new UserData("JoeBob", "IcannotThink", "joebob@gmail.com");
         memoryUserDAO.createUser(firstUser);
@@ -67,7 +64,7 @@ class GamesServiceTest {
 
     @Test
     void getGamesPositive() throws InvalidMoveException, dataaccess.DataAccessException {
-        HashSet<GameInfo> expected = new HashSet<GameInfo>();
+        HashSet<GameInfo> expected = new HashSet<>();
         expected.add(new GameInfo(thisGame));
         expected.add(new GameInfo(oneGame));
 
@@ -78,7 +75,7 @@ class GamesServiceTest {
 
     @Test
     void getGamesNegative() throws InvalidMoveException, dataaccess.DataAccessException {
-        HashSet<GameInfo> expected = new HashSet<GameInfo>();
+        HashSet<GameInfo> expected = new HashSet<>();
         expected.add(new GameInfo(thisGame));
         expected.add(new GameInfo(oneGame));
 

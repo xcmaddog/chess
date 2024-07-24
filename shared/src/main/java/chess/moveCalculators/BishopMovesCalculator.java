@@ -13,7 +13,7 @@ public class BishopMovesCalculator extends PieceMovesCalculator{
     }
 
     public HashSet<ChessMove> pieceMoves(){
-        HashSet<ChessMove> result = new HashSet<ChessMove>();
+        HashSet<ChessMove> result = new HashSet<>();
         result.addAll(longMove(1,1));
         result.addAll(longMove(-1,1));
         result.addAll(longMove(-1,-1));

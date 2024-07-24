@@ -9,10 +9,10 @@ import java.util.HashSet;
 
 public class MemoryGameDAO implements GameDAO{
 
-    HashMap<Integer, GameData> Games;
+    final HashMap<Integer, GameData> Games;
 
     public MemoryGameDAO(){
-        Games = new HashMap<Integer, GameData>();
+        Games = new HashMap<>();
     }
 
     public void createGame (GameData gameData){
@@ -27,7 +27,7 @@ public class MemoryGameDAO implements GameDAO{
     }
     public Collection<GameInfo> listGameInfo(){
         Collection<GameData> allGameData = this.listGames();
-        Collection<GameInfo> allGameInfo = new HashSet<GameInfo>();
+        Collection<GameInfo> allGameInfo = new HashSet<>();
         for(GameData g: allGameData){
             allGameInfo.add(new GameInfo(g));
         }

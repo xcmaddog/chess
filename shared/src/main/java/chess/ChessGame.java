@@ -56,7 +56,7 @@ public class ChessGame {
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessGame.TeamColor teamColor = board.getPiece(startPosition).getTeamColor();
         Collection<ChessMove> unfilteredMoves = board.getPiece(startPosition).pieceMoves(board,startPosition);
-        HashSet<ChessMove> result = new HashSet<ChessMove>();
+        HashSet<ChessMove> result = new HashSet<>();
         for(ChessMove m : unfilteredMoves){
             ChessBoard potentialFutureBoard = board.clone();
             potentialFutureBoard.makeMove(m);

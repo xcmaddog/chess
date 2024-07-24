@@ -18,18 +18,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UserServiceTest {
 
-    private MemoryUserDAO memoryUserDAO;
-    private MemoryAuthDAO memoryAuthDAO;
-    private MemoryGameDAO memoryGameDAO;
     private GameData thisGame;
     private GameData oneGame;
     private UserService userService;
 
     @BeforeEach
     void setup(){
-        memoryUserDAO = new MemoryUserDAO();
-        memoryAuthDAO = new MemoryAuthDAO();
-        memoryGameDAO = new MemoryGameDAO();
+        MemoryUserDAO memoryUserDAO = new MemoryUserDAO();
+        MemoryAuthDAO memoryAuthDAO = new MemoryAuthDAO();
+        MemoryGameDAO memoryGameDAO = new MemoryGameDAO();
 
         UserData firstUser = new UserData("JoeBob", "IcannotThink", "joebob@gmail.com");
         memoryUserDAO.createUser(firstUser);

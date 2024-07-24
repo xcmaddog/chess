@@ -97,7 +97,7 @@ public class ChessBoard {
     }
 
     public HashSet<ChessPosition> getTeamPieces(ChessGame.TeamColor color){
-        HashSet<ChessPosition> result = new HashSet<ChessPosition>();
+        HashSet<ChessPosition> result = new HashSet<>();
         for(int row = 1; row<=8; row++){
             for(int col = 1; col<=8; col++){
                 ChessPosition aPosition = new ChessPosition(row,col);

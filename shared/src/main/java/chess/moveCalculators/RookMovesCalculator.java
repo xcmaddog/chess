@@ -14,7 +14,7 @@ public class RookMovesCalculator extends PieceMovesCalculator{
 
     @Override
     public HashSet<ChessMove> pieceMoves(){
-        HashSet<ChessMove> result = new HashSet<ChessMove>();
+        HashSet<ChessMove> result = new HashSet<>();
         result.addAll(longMove(1,0));
         result.addAll(longMove(0,1));
         result.addAll(longMove(-1,0));

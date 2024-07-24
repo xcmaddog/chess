@@ -15,8 +15,8 @@ import service.GamesService;
 
 public class GamesHandler {
 
-    private Gson serializer;
-    private GamesService gamesService;
+    private final Gson serializer;
+    private final GamesService gamesService;
 
     public GamesHandler(UserDAO userDAO, GameDAO gameDAO, AuthDAO authDAO) {
         this.serializer = new Gson();

@@ -1,7 +1,5 @@
 package model;
 
-import chess.ChessGame;
-
 import java.util.Objects;
 
 public class GameInfo {

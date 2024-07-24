@@ -12,21 +12,18 @@ import java.util.Objects;
 
 public class Server {
 
-    //the server stores the location of all the data access objects
-    private final AuthDAO authDAO;
-    private final GameDAO gameDAO;
-    private final UserDAO userDAO;
     private final ClearHandler clearHandler;
     private final UserHandler userHandler;
     private final GamesHandler gameHandler;
 
     public Server(){
-        this.userDAO = new MemoryUserDAO();
-        this.gameDAO = new MemoryGameDAO();
-        this.authDAO = new MemoryAuthDAO();
+        UserDAO userDAO = new MemoryUserDAO();
+        GameDAO gameDAO = new MemoryGameDAO();
+        //the server stores the location of all the data access objects
+        AuthDAO authDAO = new MemoryAuthDAO();
         this.clearHandler = new ClearHandler(userDAO, gameDAO, authDAO);
-        this.userHandler = new UserHandler(userDAO,gameDAO,authDAO);
-        this.gameHandler = new GamesHandler(userDAO,gameDAO,authDAO);
+        this.userHandler = new UserHandler(userDAO, gameDAO, authDAO);
+        this.gameHandler = new GamesHandler(userDAO, gameDAO, authDAO);
     }
 
     public int run(int desiredPort) {
@@ -63,9 +60,6 @@ public class Server {
     }
 
     private String registerUser(Request req, Response res) {
-
-        //System.out.println("You made it to the registerUser function and the request body is: ");
-        //System.out.println(req.body());
 
         try{
             String result = userHandler.handleRegistration(req.body()); //might need to add a throw in UserHandler for invalid inputs

@@ -3,8 +3,8 @@ package dataAccess;
 import model.UserData;
 
 public interface UserDAO {
-    public void createUser(UserData userData);
-    public UserData getUser(String username);
-    public void clear();
-    public boolean isEmpty();
+    void createUser(UserData userData);
+    UserData getUser(String username);
+    void clear();
+    boolean isEmpty();
 }

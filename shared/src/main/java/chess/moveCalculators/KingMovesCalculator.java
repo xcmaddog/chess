@@ -14,7 +14,7 @@ public class KingMovesCalculator extends PieceMovesCalculator{
 
     @Override
     public HashSet<ChessMove> pieceMoves(){
-        HashSet<ChessMove> result = new HashSet<ChessMove>();
+        HashSet<ChessMove> result = new HashSet<>();
         result.addAll(oneMove(1,0));
         result.addAll(oneMove(0,1));
         result.addAll(oneMove(-1,0));
