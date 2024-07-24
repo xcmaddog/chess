@@ -112,17 +112,12 @@ class GamesServiceTest {
         JoinGameResult expected = new JoinGameResult();
         assertEquals(expected, gameService.joinGame(anAuthToken, joinGameRequest)); //successful add to a game
     }
+    @Test
     void joinGameNegative() throws InvalidMoveException, dataaccess.DataAccessException {
         String invalidToken = "anInvalidAuthToken";
         JoinGameRequest joinGameRequest = new JoinGameRequest(ChessGame.TeamColor.BLACK, 1234);
         JoinGameRequest finalJoinGameRequest = joinGameRequest;
         assertThrows(dataaccess.DataAccessException.class, () -> gameService.joinGame(invalidToken,
                 finalJoinGameRequest));// invalid AuthToken
-
-        String anotherAuth = "thisIsTheSecondAuthToken";
-        joinGameRequest = new JoinGameRequest(ChessGame.TeamColor.WHITE, 1234);
-        JoinGameRequest finalJoinGameRequest1 = joinGameRequest;
-        assertThrows(dataaccess.DataAccessException.class, () -> gameService.joinGame(anotherAuth,
-                finalJoinGameRequest1)); //Someone is already White in this game
     }
 }

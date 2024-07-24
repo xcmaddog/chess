@@ -37,7 +37,7 @@ class UserServiceTest {
     }
 
     @Test
-    void register() throws dataaccess.DataAccessException {
+    void registerPositive() throws dataaccess.DataAccessException {
         RegisterRequest registerRequest = new RegisterRequest("JillSmith", "ConfidentPassword",
                 "jill2002@yahoo.com");
         assertTrue(userService.register(registerRequest) instanceof RegisterResult);// a new user was made
@@ -46,6 +46,9 @@ class UserServiceTest {
         RegisterRequest finalRegisterRequest = registerRequest;
         assertThrows(dataaccess.DataAccessException.class, () -> userService.register(finalRegisterRequest));//a new user was not made
     }
+
+    @Test
+    void registerNegative() throws dataaccess.DataAccessException {}
 
     @Test
     void login() throws dataaccess.DataAccessException {
