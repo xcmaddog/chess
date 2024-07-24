@@ -26,4 +26,11 @@ public class LogoutRequest {
     public int hashCode() {
         return Objects.hashCode(authToken);
     }
+
+    @Override
+    public String toString() {
+        return "LogoutRequest{" +
+                "authToken='" + authToken + '\'' +
+                '}';
+    }
 }

@@ -6,6 +6,10 @@ import handler.ClearHandler;
 import handler.UserHandler;
 import spark.*;
 
+import java.util.Objects;
+
+//import static jdk.internal.net.http.common.Log.headers;
+
 public class Server {
 
     //the server stores the location of all the data access objects
@@ -32,6 +36,7 @@ public class Server {
         Spark.delete("/db",this::deleteEverything);
         Spark.post("/user", this::registerUser);
         Spark.post("/session",this::loginUser);
+        Spark.delete("/session", this::logoutUser);
         //Spark.get(" ")
 
 
@@ -61,30 +66,24 @@ public class Server {
         try{
             String result = userHandler.handleRegistration(req.body()); //might need to add a throw in UserHandler for invalid inputs
             res.status(200);
-            //res.body(result);
             return result;
         }
         catch(dataaccess.DataAccessException dataAccessException){
             if(dataAccessException.getMessage() == "A user with that username already exists"){
                 res.status(403);
-                res.header("message","Error: already taken");
                 return "{ \"message\": \"Error: already taken\" }";
             } else if(dataAccessException.getMessage() == "username not provided"){
                 res.status(400);
-                res.header("message:", "Error: bad request");
                 return "{ \"message\": \"Error: bad request\" }";
             }else if(dataAccessException.getMessage() == "password not provided"){
                 res.status(400);
-                res.header("message:", "Error: bad request");
                 return "{ \"message\": \"Error: bad request\" }";
             }else if (dataAccessException.getMessage() == "email not provided"){
                 res.status(400);
-                res.header("message:", "Error: bad request");
                 return "{ \"message\": \"Error: bad request\" }";
             }else{
                 res.status(500);
                 String description = dataAccessException.getMessage();
-                res.header("message:", "Error: " + description);
                 return "{ \"message\": \"Error: " + description + "\" }";
             }
         }
@@ -94,13 +93,29 @@ public class Server {
         try{
            String result = userHandler.handleLogin(req.body());
            res.status(200);
-           //res.body(result);
            return result;
         }catch (dataaccess.DataAccessException dataAccessException) {
             if(dataAccessException.getMessage() == "The password provided was incorrect"){
                 res.status(401);
                 return "{ \"message\": \"Error: unauthorized\" }";
             }else if (dataAccessException.getMessage() == "The username provided is invalid"){
+                res.status(401);
+                return "{ \"message\": \"Error: unauthorized\" }";
+            }else{
+                res.status(500);
+                return "{ \"message\": \"Error: " + dataAccessException.getMessage() + "\" }";
+            }
+        }
+    }
+
+    private String logoutUser (Request req, Response res){
+        try{
+            String theAuthToken = req.headers("authorization");
+            String result = userHandler.handleLogout(theAuthToken);
+            res.status(200);
+            return result;
+        }catch(dataaccess.DataAccessException dataAccessException){
+            if (Objects.equals(dataAccessException.getMessage(), "The authToken was not recognized")){
                 res.status(401);
                 return "{ \"message\": \"Error: unauthorized\" }";
             }else{
