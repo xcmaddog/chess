@@ -131,19 +131,23 @@ public class ChessBoard {
         removePiece(startPosition);
         if(move.getPromotionPiece() != null){
             ChessPiece promotedPiece = new ChessPiece(color,move.getPromotionPiece());
-            promotedPiece.markMoved();
+            //promotedPiece.markMoved();
             addPiece(endPosition,promotedPiece);
         } else{
             ChessPiece copyPiece = new ChessPiece(color,type);
-            copyPiece.markMoved();
+            //copyPiece.markMoved();
             addPiece(endPosition,copyPiece);
         }
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ChessBoard that = (ChessBoard) o;
         return Objects.equals(pieces, that.pieces);
     }
