@@ -201,9 +201,6 @@ public class ChessGame {
         return board;
     }
 
-    //private boolean canCastle (){
-    //    return false;
-    //}
 
     @Override
     public boolean equals(Object o) {
