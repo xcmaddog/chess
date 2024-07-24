@@ -1,28 +1,28 @@
-package dataAccess;
+package dataaccess;
 
 import model.UserData;
 import java.util.HashMap;
 
 public class MemoryUserDAO implements UserDAO{
-    final HashMap<String,UserData> Users;
+    final HashMap<String,UserData> users;
 
     public MemoryUserDAO (){
-        Users = new HashMap<>();
+        users = new HashMap<>();
     }
 
     public void createUser(UserData userData){
         String username = userData.username();
-        Users.put(username,userData);
+        users.put(username,userData);
     }
     public UserData getUser(String username){
-        return Users.get(username);
+        return users.get(username);
     }
     public void clear(){
-        Users.clear();
+        users.clear();
     }
 
     @Override
     public boolean isEmpty() {
-        return Users.isEmpty();
+        return users.isEmpty();
     }
 }

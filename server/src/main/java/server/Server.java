@@ -1,6 +1,6 @@
 package server;
 
-import dataAccess.*;
+import dataaccess.*;
 import handler.ClearHandler;
 import handler.GamesHandler;
 import handler.UserHandler;

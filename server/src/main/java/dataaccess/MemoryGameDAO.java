@@ -1,4 +1,4 @@
-package dataAccess;
+package dataaccess;
 
 import model.GameData;
 import model.GameInfo;
@@ -9,21 +9,21 @@ import java.util.HashSet;
 
 public class MemoryGameDAO implements GameDAO{
 
-    final HashMap<Integer, GameData> Games;
+    final HashMap<Integer, GameData> games;
 
     public MemoryGameDAO(){
-        Games = new HashMap<>();
+        games = new HashMap<>();
     }
 
     public void createGame (GameData gameData){
         int gameID = gameData.getGameID();
-        Games.put(gameID,gameData);
+        games.put(gameID,gameData);
     }
     public GameData getGame(int gameID){
-        return Games.get(gameID);
+        return games.get(gameID);
     }
     public Collection<GameData> listGames(){
-        return Games.values();
+        return games.values();
     }
     public Collection<GameInfo> listGameInfo(){
         Collection<GameData> allGameData = this.listGames();
@@ -36,15 +36,15 @@ public class MemoryGameDAO implements GameDAO{
     public void updateGame(GameData gameData){
         //I will probably need to catch a case where there is not a matching gameData to update
         int gameID = gameData.getGameID();
-        Games.remove(gameID);
-        Games.put(gameID, gameData);
+        games.remove(gameID);
+        games.put(gameID, gameData);
     }
     public void clear(){
-        Games.clear();
+        games.clear();
     }
 
     @Override
     public boolean isEmpty() {
-        return Games.isEmpty();
+        return games.isEmpty();
     }
 }

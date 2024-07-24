@@ -1,4 +1,4 @@
-package dataAccess;
+package dataaccess;
 
 import model.AuthData;
 
@@ -6,28 +6,28 @@ import java.util.HashMap;
 
 public class MemoryAuthDAO implements AuthDAO{
 
-   final HashMap<String, AuthData> Auths;
+   final HashMap<String, AuthData> auths;
 
     public MemoryAuthDAO (){
-        Auths = new HashMap<>();
+        auths = new HashMap<>();
     }
 
     public void createAuth(AuthData authData){
         String authToken = authData.authToken();
-        Auths.put(authToken, authData);
+        auths.put(authToken, authData);
     }
     public AuthData getAuth(String authToken){
-        return Auths.get(authToken);
+        return auths.get(authToken);
     }
     public void deleteAuth(String authToken){
-        Auths.remove(authToken);
+        auths.remove(authToken);
     }
     public void clear(){
-        Auths.clear();
+        auths.clear();
     }
 
     @Override
     public boolean isEmpty() {
-        return (Auths.isEmpty());
+        return (auths.isEmpty());
     }
 }

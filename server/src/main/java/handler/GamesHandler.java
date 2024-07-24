@@ -1,9 +1,9 @@
 package handler;
 
 import com.google.gson.Gson;
-import dataAccess.AuthDAO;
-import dataAccess.GameDAO;
-import dataAccess.UserDAO;
+import dataaccess.AuthDAO;
+import dataaccess.GameDAO;
+import dataaccess.UserDAO;
 import dataaccess.DataAccessException;
 import request.CreateGameRequest;
 import request.JoinGameRequest;

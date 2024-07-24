@@ -53,7 +53,9 @@ public class GameInfo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         GameInfo gameInfo = (GameInfo) o;
-        return gameID == gameInfo.gameID && Objects.equals(gameName, gameInfo.gameName) && Objects.equals(whiteUsername, gameInfo.whiteUsername) && Objects.equals(blackUsername, gameInfo.blackUsername);
+        return gameID == gameInfo.gameID && Objects.equals(gameName, gameInfo.gameName)
+                && Objects.equals(whiteUsername, gameInfo.whiteUsername)
+                && Objects.equals(blackUsername, gameInfo.blackUsername);
     }
 
     @Override
