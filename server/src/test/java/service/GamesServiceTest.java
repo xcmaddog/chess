@@ -11,6 +11,7 @@ import model.AuthData;
 import model.GameData;
 import model.GameInfo;
 import model.UserData;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import request.CreateGameRequest;
@@ -24,13 +25,21 @@ import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
 class GamesServiceTest {
+
+    private MemoryUserDAO memoryUserDAO;
+    private MemoryAuthDAO memoryAuthDAO;
+    private MemoryGameDAO memoryGameDAO;
+    private GameData thisGame;
+    private GameData oneGame;
+    private GamesService gameService;
 
     @BeforeEach
     void setUp() throws InvalidMoveException {
-        MemoryUserDAO memoryUserDAO = new MemoryUserDAO();
-        MemoryAuthDAO memoryAuthDAO = new MemoryAuthDAO();
-        MemoryGameDAO memoryGameDAO = new MemoryGameDAO();
+        memoryUserDAO = new MemoryUserDAO();
+        memoryAuthDAO = new MemoryAuthDAO();
+        memoryGameDAO = new MemoryGameDAO();
 
         UserData firstUser = new UserData("JoeBob", "IcannotThink", "joebob@gmail.com");
         memoryUserDAO.createUser(firstUser);
@@ -47,43 +56,16 @@ class GamesServiceTest {
         ChessGame withAMove = new ChessGame();
         ChessMove theMove = new ChessMove(new ChessPosition(2,3),new ChessPosition(3,3));
         withAMove.makeMove(theMove);
-        GameData thisGame = new GameData(4321,"Hippocampus",withAMove,"JillSmith","JoeBob");
-        GameData oneGame = new GameData(1234,"TheGame", new ChessGame(), "JoeBob", "JillSmith");
+        thisGame = new GameData(4321,"Hippocampus",withAMove,"JillSmith","JoeBob");
+        oneGame = new GameData(1234,"TheGame", new ChessGame(), null, "JillSmith");
+        memoryGameDAO.createGame(thisGame);
+        memoryGameDAO.createGame(oneGame);
 
-        GamesService gameService = new GamesService(memoryUserDAO, memoryGameDAO, memoryAuthDAO);
-
-        HashSet<GameInfo> expected = new HashSet<GameInfo>();
-        expected.add(new GameInfo(thisGame));
-        expected.add(new GameInfo(oneGame));
+        gameService = new GamesService(memoryUserDAO, memoryGameDAO, memoryAuthDAO);
     }
 
     @Test
     void getGames() throws InvalidMoveException, dataaccess.DataAccessException {
-        MemoryUserDAO memoryUserDAO = new MemoryUserDAO();
-        MemoryAuthDAO memoryAuthDAO = new MemoryAuthDAO();
-        MemoryGameDAO memoryGameDAO = new MemoryGameDAO();
-
-        UserData firstUser = new UserData("JoeBob", "IcannotThink", "joebob@gmail.com");
-        memoryUserDAO.createUser(firstUser);
-        String firstAuthToken = "thisIsTheFirstAuthToken";
-        AuthData firstAuth = new AuthData(firstAuthToken,"JoeBob");
-        memoryAuthDAO.createAuth(firstAuth);
-
-        UserData secondUser = new UserData("JillSmith", "ConfidentPassword", "jills2002@yahoo.com");
-        memoryUserDAO.createUser(secondUser);
-        String secondAuthToken = "thisIsTheSecondAuthToken";
-        AuthData secondAuth = new AuthData(secondAuthToken, "JillSmith");
-        memoryAuthDAO.createAuth(secondAuth);
-
-        ChessGame withAMove = new ChessGame();
-        ChessMove theMove = new ChessMove(new ChessPosition(2,3),new ChessPosition(3,3));
-        withAMove.makeMove(theMove);
-        GameData thisGame = new GameData(4321,"Hippocampus",withAMove,"JillSmith","JoeBob");
-        GameData oneGame = new GameData(1234,"TheGame", new ChessGame(), "JoeBob", "JillSmith");
-        memoryGameDAO.createGame(thisGame);
-        memoryGameDAO.createGame(oneGame);
-
-        GamesService gameService = new GamesService(memoryUserDAO, memoryGameDAO, memoryAuthDAO);
 
         HashSet<GameInfo> expected = new HashSet<GameInfo>();
         expected.add(new GameInfo(thisGame));
@@ -100,18 +82,6 @@ class GamesServiceTest {
 
     @Test
     void createGame() throws InvalidMoveException, dataaccess.DataAccessException {
-        MemoryUserDAO memoryUserDAO = new MemoryUserDAO();
-        MemoryAuthDAO memoryAuthDAO = new MemoryAuthDAO();
-        MemoryGameDAO memoryGameDAO = new MemoryGameDAO();
-
-        UserData firstUser = new UserData("JoeBob", "IcannotThink", "joebob@gmail.com");
-        memoryUserDAO.createUser(firstUser);
-        String firstAuthToken = "thisIsTheFirstAuthToken";
-        AuthData firstAuth = new AuthData(firstAuthToken,"JoeBob");
-        memoryAuthDAO.createAuth(firstAuth);
-
-        GamesService gameService = new GamesService(memoryUserDAO, memoryGameDAO, memoryAuthDAO);
-
         String someAuth = "thisIsTheFirstAuthToken";
         CreateGameRequest createGameRequest = new CreateGameRequest("TheGame");
         CreateGameResult expected = new CreateGameResult(1);
@@ -125,32 +95,6 @@ class GamesServiceTest {
 
     @Test
     void joinGame() throws InvalidMoveException, dataaccess.DataAccessException {
-        MemoryUserDAO memoryUserDAO = new MemoryUserDAO();
-        MemoryAuthDAO memoryAuthDAO = new MemoryAuthDAO();
-        MemoryGameDAO memoryGameDAO = new MemoryGameDAO();
-
-        UserData firstUser = new UserData("JoeBob", "IcannotThink", "joebob@gmail.com");
-        memoryUserDAO.createUser(firstUser);
-        String firstAuthToken = "thisIsTheFirstAuthToken";
-        AuthData firstAuth = new AuthData(firstAuthToken,"JoeBob");
-        memoryAuthDAO.createAuth(firstAuth);
-
-        UserData secondUser = new UserData("JillSmith", "ConfidentPassword", "jills2002@yahoo.com");
-        memoryUserDAO.createUser(secondUser);
-        String secondAuthToken = "thisIsTheSecondAuthToken";
-        AuthData secondAuth = new AuthData(secondAuthToken, "JillSmith");
-        memoryAuthDAO.createAuth(secondAuth);
-
-        ChessGame withAMove = new ChessGame();
-        ChessMove theMove = new ChessMove(new ChessPosition(2,3),new ChessPosition(3,3));
-        withAMove.makeMove(theMove);
-        GameData thisGame = new GameData(4321,"Hippocampus",withAMove);
-        GameData oneGame = new GameData(1234,"TheGame", new ChessGame());
-        memoryGameDAO.createGame(thisGame);
-        memoryGameDAO.createGame(oneGame);
-
-        GamesService gameService = new GamesService(memoryUserDAO, memoryGameDAO, memoryAuthDAO);
-
         String anAuthToken = "thisIsTheFirstAuthToken";
         JoinGameRequest joinGameRequest = new JoinGameRequest(ChessGame.TeamColor.WHITE, 1234);
         JoinGameResult expected = new JoinGameResult();
