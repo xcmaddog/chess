@@ -1,8 +1,8 @@
 package server;
 
 import dataAccess.*;
-import exception.ResponseException;
 import handler.ClearHandler;
+import handler.GamesHandler;
 import handler.UserHandler;
 import spark.*;
 
@@ -18,6 +18,7 @@ public class Server {
     private final UserDAO userDAO;
     private final ClearHandler clearHandler;
     private final UserHandler userHandler;
+    private final GamesHandler gameHandler;
 
     public Server(){
         this.userDAO = new MemoryUserDAO();
@@ -25,6 +26,7 @@ public class Server {
         this.authDAO = new MemoryAuthDAO();
         this.clearHandler = new ClearHandler(userDAO, gameDAO, authDAO);
         this.userHandler = new UserHandler(userDAO,gameDAO,authDAO);
+        this.gameHandler = new GamesHandler(userDAO,gameDAO,authDAO);
     }
 
     public int run(int desiredPort) {
@@ -37,6 +39,7 @@ public class Server {
         Spark.post("/user", this::registerUser);
         Spark.post("/session",this::loginUser);
         Spark.delete("/session", this::logoutUser);
+        Spark.post("/game", this::createGame);
         //Spark.get(" ")
 
 
@@ -49,7 +52,7 @@ public class Server {
         Spark.awaitStop();
     }
 
-    private String deleteEverything(Request req, Response res) throws ResponseException {
+    private String deleteEverything(Request req, Response res) {
 
         //System.out.println("You made it to the deleteEverything function");
 
@@ -58,7 +61,7 @@ public class Server {
         return result;
     }
 
-    private String registerUser(Request req, Response res) throws ResponseException {
+    private String registerUser(Request req, Response res) {
 
         //System.out.println("You made it to the registerUser function and the request body is: ");
         //System.out.println(req.body());
@@ -89,7 +92,7 @@ public class Server {
         }
     }
 
-    private String loginUser (Request req, Response res) throws ResponseException {
+    private String loginUser (Request req, Response res) {
         try{
            String result = userHandler.handleLogin(req.body());
            res.status(200);
@@ -122,6 +125,18 @@ public class Server {
                 res.status(500);
                 return "{ \"message\": \"Error: " + dataAccessException.getMessage() + "\" }";
             }
+        }
+    }
+
+    private String createGame (Request req, Response res) {
+        try{
+            String theAuthToken = req.headers("authorization");
+            String result = gameHandler.handleCreateGame(theAuthToken,req.body());
+            res.status(200);
+            return result;
+        }
+        catch (dataaccess.DataAccessException dataAccessException){
+            return null;
         }
     }
 

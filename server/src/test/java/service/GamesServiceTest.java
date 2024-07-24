@@ -112,13 +112,15 @@ class GamesServiceTest {
 
         GamesService gameService = new GamesService(memoryUserDAO, memoryGameDAO, memoryAuthDAO);
 
-        CreateGameRequest createGameRequest = new CreateGameRequest("thisIsTheFirstAuthToken", "TheGame");
+        String someAuth = "thisIsTheFirstAuthToken";
+        CreateGameRequest createGameRequest = new CreateGameRequest("TheGame");
         CreateGameResult expected = new CreateGameResult(1);
-        assertEquals(expected, gameService.createGame(createGameRequest));
+        assertEquals(expected, gameService.createGame(someAuth, createGameRequest));
 
-        createGameRequest = new CreateGameRequest("anInvalidAuthToken", "Bogus");
+        String invalidAuth = "anInvalidAuthToken";
+        createGameRequest = new CreateGameRequest("Bogus");
         CreateGameRequest finalCreateGameRequest = createGameRequest;
-        assertThrows(dataaccess.DataAccessException.class, () -> gameService.createGame(finalCreateGameRequest));
+        assertThrows(dataaccess.DataAccessException.class, () -> gameService.createGame(invalidAuth, finalCreateGameRequest));
     }
 
     @Test

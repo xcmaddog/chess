@@ -35,8 +35,8 @@ public class GamesService extends Service{
         }
     }
 
-    public CreateGameResult createGame(CreateGameRequest createGameRequest) throws DataAccessException {
-        if (isAuthorized(createGameRequest.getAuthToken())){
+    public CreateGameResult createGame(String authToken, CreateGameRequest createGameRequest) throws DataAccessException {
+        if (isAuthorized(authToken)){
             GameData gameData = new GameData(nextGameID, createGameRequest.getGameName(), new ChessGame());
             gameDAO.createGame(gameData);
             nextGameID++;
