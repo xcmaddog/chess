@@ -46,8 +46,8 @@ public class GamesService extends Service{
         }
     }
 
-    public JoinGameResult joinGame(JoinGameRequest joinGameRequest) throws DataAccessException {
-        if(! isAuthorized(joinGameRequest.getAuthToken())){
+    public JoinGameResult joinGame(String authToken, JoinGameRequest joinGameRequest) throws DataAccessException {
+        if(! isAuthorized(authToken)){
             throw new DataAccessException("Invalid AuthToken");
         }
         GameData gameData = gameDAO.getGame(joinGameRequest.getGameID());
@@ -59,7 +59,7 @@ public class GamesService extends Service{
             if(gameData.getWhiteUsername() != null){
                 throw new DataAccessException("There is already someone playing white in this game");
             }
-            String username = authDAO.getAuth(joinGameRequest.getAuthToken()).username();
+            String username = authDAO.getAuth(authToken).username();
             GameData newData = new GameData(gameData.getGameID(), gameData.getGameName(),gameData.getGame(), username, gameData.getBlackUsername());
             gameDAO.updateGame(newData);
             JoinGameResult joinGameResult = new JoinGameResult();
@@ -68,7 +68,7 @@ public class GamesService extends Service{
             if (gameData.getBlackUsername() != null){
                 throw new DataAccessException("There is already someone playing black in this game");
             }
-            String username = authDAO.getAuth(joinGameRequest.getAuthToken()).username();
+            String username = authDAO.getAuth(authToken).username();
             GameData newData = new GameData(gameData.getGameID(), gameData.getGameName(),gameData.getGame(), gameData.getWhiteUsername(), username);
             gameDAO.updateGame(newData);
             JoinGameResult joinGameResult = new JoinGameResult();

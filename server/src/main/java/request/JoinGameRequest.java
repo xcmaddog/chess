@@ -6,19 +6,19 @@ import java.util.Objects;
 
 public class JoinGameRequest {
 
-    private final String authToken;
+    //private final String authToken;
     private final ChessGame.TeamColor playerColor;
     private final int gameID;
 
-    public JoinGameRequest(String authToken, ChessGame.TeamColor playerColor, int gameID){
-        this.authToken = authToken;
+    public JoinGameRequest(ChessGame.TeamColor playerColor, int gameID){
+        //this.authToken = authToken;
         this.playerColor = playerColor;
         this.gameID = gameID;
     }
 
-    public String getAuthToken() {
-        return authToken;
-    }
+    //public String getAuthToken() {
+    //    return authToken;
+    //}
 
     public ChessGame.TeamColor getPlayerColor() {
         return playerColor;
@@ -33,11 +33,11 @@ public class JoinGameRequest {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         JoinGameRequest that = (JoinGameRequest) o;
-        return gameID == that.gameID && Objects.equals(authToken, that.authToken) && Objects.equals(playerColor, that.playerColor);
+        return gameID == that.gameID && Objects.equals(playerColor, that.playerColor);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(authToken, playerColor, gameID);
+        return Objects.hash(playerColor, gameID);
     }
 }

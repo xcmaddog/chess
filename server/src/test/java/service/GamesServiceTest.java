@@ -151,16 +151,19 @@ class GamesServiceTest {
 
         GamesService gameService = new GamesService(memoryUserDAO, memoryGameDAO, memoryAuthDAO);
 
-        JoinGameRequest joinGameRequest = new JoinGameRequest("thisIsTheFirstAuthToken", ChessGame.TeamColor.WHITE, 1234);
+        String anAuthToken = "thisIsTheFirstAuthToken";
+        JoinGameRequest joinGameRequest = new JoinGameRequest(ChessGame.TeamColor.WHITE, 1234);
         JoinGameResult expected = new JoinGameResult();
-        assertEquals(expected, gameService.joinGame(joinGameRequest)); //successful add to a game
+        assertEquals(expected, gameService.joinGame(anAuthToken, joinGameRequest)); //successful add to a game
 
-        joinGameRequest = new JoinGameRequest("anInvalidAuthToken", ChessGame.TeamColor.BLACK, 1234);
+        String invalidToken = "anInvalidAuthToken";
+        joinGameRequest = new JoinGameRequest(ChessGame.TeamColor.BLACK, 1234);
         JoinGameRequest finalJoinGameRequest = joinGameRequest;
-        assertThrows(dataaccess.DataAccessException.class, () -> gameService.joinGame(finalJoinGameRequest));// invalid AuthToken
+        assertThrows(dataaccess.DataAccessException.class, () -> gameService.joinGame(invalidToken, finalJoinGameRequest));// invalid AuthToken
 
-        joinGameRequest = new JoinGameRequest("thisIsTheSecondAuthToken", ChessGame.TeamColor.WHITE, 1234);
+        String anotherAuth = "thisIsTheSecondAuthToken";
+        joinGameRequest = new JoinGameRequest(ChessGame.TeamColor.WHITE, 1234);
         JoinGameRequest finalJoinGameRequest1 = joinGameRequest;
-        assertThrows(dataaccess.DataAccessException.class, () -> gameService.joinGame(finalJoinGameRequest1)); //Someone is already White in this game
+        assertThrows(dataaccess.DataAccessException.class, () -> gameService.joinGame(anotherAuth, finalJoinGameRequest1)); //Someone is already White in this game
     }
 }

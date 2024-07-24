@@ -40,7 +40,8 @@ public class Server {
         Spark.post("/session",this::loginUser);
         Spark.delete("/session", this::logoutUser);
         Spark.post("/game", this::createGame);
-        //Spark.get(" ")
+        Spark.put("/game", this::joinGame);
+        Spark.get("/game", this::listGames);
 
 
         Spark.awaitInitialization();
@@ -72,16 +73,16 @@ public class Server {
             return result;
         }
         catch(dataaccess.DataAccessException dataAccessException){
-            if(dataAccessException.getMessage() == "A user with that username already exists"){
+            if(Objects.equals(dataAccessException.getMessage(), "A user with that username already exists")){
                 res.status(403);
                 return "{ \"message\": \"Error: already taken\" }";
-            } else if(dataAccessException.getMessage() == "username not provided"){
+            } else if(Objects.equals(dataAccessException.getMessage(), "username not provided")){
                 res.status(400);
                 return "{ \"message\": \"Error: bad request\" }";
-            }else if(dataAccessException.getMessage() == "password not provided"){
+            }else if(Objects.equals(dataAccessException.getMessage(), "password not provided")){
                 res.status(400);
                 return "{ \"message\": \"Error: bad request\" }";
-            }else if (dataAccessException.getMessage() == "email not provided"){
+            }else if (Objects.equals(dataAccessException.getMessage(), "email not provided")){
                 res.status(400);
                 return "{ \"message\": \"Error: bad request\" }";
             }else{
@@ -98,10 +99,10 @@ public class Server {
            res.status(200);
            return result;
         }catch (dataaccess.DataAccessException dataAccessException) {
-            if(dataAccessException.getMessage() == "The password provided was incorrect"){
+            if(Objects.equals(dataAccessException.getMessage(), "The password provided was incorrect")){
                 res.status(401);
                 return "{ \"message\": \"Error: unauthorized\" }";
-            }else if (dataAccessException.getMessage() == "The username provided is invalid"){
+            }else if (Objects.equals(dataAccessException.getMessage(), "The username provided is invalid")){
                 res.status(401);
                 return "{ \"message\": \"Error: unauthorized\" }";
             }else{
@@ -136,8 +137,64 @@ public class Server {
             return result;
         }
         catch (dataaccess.DataAccessException dataAccessException){
-            return null;
+            if (Objects.equals(dataAccessException.getMessage(), "Invalid AuthToken")){
+                res.status(401);
+                return "{ \"message\": \"Error: unauthorized\" }";
+            }else if (Objects.equals(dataAccessException.getMessage(), "Invalid request")){
+                res.status(400);
+                return "{ \"message\": \"Error: bad request\" }";
+            }else {
+                res.status(500);
+                return "{ \"message\": \"Error: " + dataAccessException.getMessage() + "\" }";
+            }
         }
     }
+
+    private String joinGame(Request req, Response res) {
+        try{
+            String theAuthToken = req.headers("authorization");
+            String result = gameHandler.handleJoinGame(theAuthToken,req.body());
+            res.status(200);
+            return result;
+        }
+        catch (dataaccess.DataAccessException dataAccessException){
+            if(Objects.equals(dataAccessException.getMessage(), "Invalid request")){
+                res.status(400);
+                return "{ \"message\": \"Error: bad request\" }";
+            } else if (Objects.equals(dataAccessException.getMessage(), "There is already someone playing white in this game") ||
+                        Objects.equals(dataAccessException.getMessage(), "There is already someone playing black in this game")) {
+                res.status(403);
+                return "{ \"message\": \"Error: already taken\" }";
+            } else if (Objects.equals(dataAccessException.getMessage(), "Invalid AuthToken")){
+                res.status(401);
+                return "{ \"message\": \"Error: unauthorized\" }";
+            }else if (Objects.equals(dataAccessException.getMessage(), "Game not found")){
+                res.status(500);
+                return "{ \"message\": \"Error: " + dataAccessException.getMessage() + "\" }";
+            } else{
+                res.status(500);
+                return "{ \"message\": \"Error: " + dataAccessException.getMessage() + "\" }";
+            }
+        }
+    }
+
+    private String listGames (Request req, Response res){
+        try{
+            String theAuthToken = req.headers("authorization");
+            String result = gameHandler.handleListGames(theAuthToken);
+            res.status(200);
+            return result;
+        }
+        catch(dataaccess.DataAccessException dataAccessException){
+            if (Objects.equals(dataAccessException.getMessage(), "Invalid AuthToken")){
+                res.status(401);
+                return "{ \"message\": \"Error: unauthorized\" }";
+            } else{
+                res.status(500);
+                return "{ \"message\": \"Error: " + dataAccessException.getMessage() + "\" }";
+            }
+        }
+    }
+
 
 }
