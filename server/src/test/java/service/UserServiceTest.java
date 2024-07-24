@@ -3,7 +3,9 @@ package service;
 import dataAccess.MemoryAuthDAO;
 import dataAccess.MemoryGameDAO;
 import dataAccess.MemoryUserDAO;
+import model.GameData;
 import model.UserData;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import request.LoginRequest;
 import request.LogoutRequest;
@@ -16,16 +18,26 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UserServiceTest {
 
-    @Test
-    void register() throws dataaccess.DataAccessException {
-        MemoryUserDAO memoryUserDAO = new MemoryUserDAO();
-        MemoryAuthDAO memoryAuthDAO = new MemoryAuthDAO();
-        MemoryGameDAO memoryGameDAO = new MemoryGameDAO();
+    private MemoryUserDAO memoryUserDAO;
+    private MemoryAuthDAO memoryAuthDAO;
+    private MemoryGameDAO memoryGameDAO;
+    private GameData thisGame;
+    private GameData oneGame;
+    private UserService userService;
+
+    @BeforeEach
+    void setup(){
+        memoryUserDAO = new MemoryUserDAO();
+        memoryAuthDAO = new MemoryAuthDAO();
+        memoryGameDAO = new MemoryGameDAO();
+
         UserData firstUser = new UserData("JoeBob", "IcannotThink", "joebob@gmail.com");
         memoryUserDAO.createUser(firstUser);
-        UserService userService = new UserService(memoryUserDAO, memoryGameDAO, memoryAuthDAO);
-        //userService.setUserDAO(memoryUserDAO);
+        userService = new UserService(memoryUserDAO, memoryGameDAO, memoryAuthDAO);
+    }
 
+    @Test
+    void register() throws dataaccess.DataAccessException {
         RegisterRequest registerRequest = new RegisterRequest("JillSmith", "ConfidentPassword",
                 "jill2002@yahoo.com");
         assertTrue(userService.register(registerRequest) instanceof RegisterResult);// a new user was made
@@ -37,14 +49,6 @@ class UserServiceTest {
 
     @Test
     void login() throws dataaccess.DataAccessException {
-        MemoryUserDAO memoryUserDAO = new MemoryUserDAO();
-        MemoryAuthDAO memoryAuthDAO = new MemoryAuthDAO();
-        MemoryGameDAO memoryGameDAO = new MemoryGameDAO();
-        UserData firstUser = new UserData("JoeBob", "IcannotThink", "joebob@gmail.com");
-        memoryUserDAO.createUser(firstUser);
-        UserService userService = new UserService(memoryUserDAO, memoryGameDAO, memoryAuthDAO);
-        //userService.setUserDAO(memoryUserDAO);
-
         LoginRequest loginRequest = new LoginRequest("JoeBob", "IcannotThink");
         assertTrue(userService.login(loginRequest) instanceof LoginResult); // successful login
 
@@ -56,14 +60,6 @@ class UserServiceTest {
 
     @Test
     void logout() throws dataaccess.DataAccessException {
-        MemoryUserDAO memoryUserDAO = new MemoryUserDAO();
-        MemoryAuthDAO memoryAuthDAO = new MemoryAuthDAO();
-        MemoryGameDAO memoryGameDAO = new MemoryGameDAO();
-        UserData firstUser = new UserData("JoeBob", "IcannotThink", "joebob@gmail.com");
-        memoryUserDAO.createUser(firstUser);
-        UserService userService = new UserService(memoryUserDAO, memoryGameDAO, memoryAuthDAO);
-        //userService.setUserDAO(memoryUserDAO);
-
         LoginRequest loginRequest = new LoginRequest("JoeBob", "IcannotThink");
         LoginResult loginResult = userService.login(loginRequest);
 

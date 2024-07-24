@@ -26,7 +26,7 @@ public class GamesService extends Service{
     }
 
     public ListGamesResult getGames(ListGamesRequest listGamesRequest) throws DataAccessException {
-        if(isAuthorized(listGamesRequest.getAuthToken())){
+        if(isAuthorized(listGamesRequest.authToken())){
             Collection<GameInfo> listOfGames =  gameDAO.listGameInfo();
             ListGamesResult listGamesResult = new ListGamesResult((HashSet<GameInfo>) listOfGames);
             return listGamesResult;
@@ -37,7 +37,7 @@ public class GamesService extends Service{
 
     public CreateGameResult createGame(String authToken, CreateGameRequest createGameRequest) throws DataAccessException {
         if (isAuthorized(authToken)){
-            GameData gameData = new GameData(nextGameID, createGameRequest.getGameName(), new ChessGame());
+            GameData gameData = new GameData(nextGameID, createGameRequest.gameName(), new ChessGame());
             gameDAO.createGame(gameData);
             nextGameID++;
             return new CreateGameResult(nextGameID - 1);
@@ -50,11 +50,11 @@ public class GamesService extends Service{
         if(! isAuthorized(authToken)){
             throw new DataAccessException("Invalid AuthToken");
         }
-        GameData gameData = gameDAO.getGame(joinGameRequest.getGameID());
+        GameData gameData = gameDAO.getGame(joinGameRequest.gameID());
         if (gameData == null){
             throw new DataAccessException("Game not found");
         }
-        ChessGame.TeamColor color = joinGameRequest.getPlayerColor();
+        ChessGame.TeamColor color = joinGameRequest.playerColor();
         if(color == ChessGame.TeamColor.WHITE){
             if(gameData.getWhiteUsername() != null){
                 throw new DataAccessException("There is already someone playing white in this game");

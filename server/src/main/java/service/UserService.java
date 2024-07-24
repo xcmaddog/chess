@@ -22,9 +22,9 @@ public class UserService extends Service{
     }
 
     public RegisterResult register(RegisterRequest registerRequest) throws dataaccess.DataAccessException {
-        String username = registerRequest.getUsername();
+        String username = registerRequest.username();
         if (super.userDAO.getUser(username) == null){
-            UserData userData = new UserData(username, registerRequest.getPassword(), registerRequest.getEmail());
+            UserData userData = new UserData(username, registerRequest.password(), registerRequest.email());
             userDAO.createUser(userData);
             String authToken = UUID.randomUUID().toString();
             AuthData authData = new AuthData(authToken,username);
@@ -37,10 +37,10 @@ public class UserService extends Service{
     }
 
     public LoginResult login(LoginRequest loginRequest) throws dataaccess.DataAccessException{
-        String username = loginRequest.getUsername();
+        String username = loginRequest.username();
         UserData userData = userDAO.getUser(username);
         if (userData != null){
-            if (Objects.equals(userData.password(), loginRequest.getPassword())){
+            if (Objects.equals(userData.password(), loginRequest.password())){
                 String authToken = UUID.randomUUID().toString();
                 AuthData authData = new AuthData(authToken,username);
                 authDAO.createAuth(authData);
@@ -55,7 +55,7 @@ public class UserService extends Service{
     }
 
     public LogoutResult logout(LogoutRequest logoutRequest) throws dataaccess.DataAccessException {
-        String authToken = logoutRequest.getAuthToken();
+        String authToken = logoutRequest.authToken();
         if (isAuthorized(authToken)){
             //log them out
             authDAO.deleteAuth(authToken);

@@ -31,13 +31,13 @@ public class UserHandler {
         //System.out.println("You are in the UserHandler handleRegistration method and just created this:");
         //System.out.println(registerRequest.toString());
 
-        if(registerRequest.getUsername() == null){
+        if(registerRequest.username() == null){
             throw new dataaccess.DataAccessException("username not provided");
         }
-        if(registerRequest.getPassword() == null){
+        if(registerRequest.password() == null){
             throw new dataaccess.DataAccessException("password not provided");
         }
-        if(registerRequest.getEmail() == null){
+        if(registerRequest.email() == null){
             throw new dataaccess.DataAccessException("email not provided");
         }
         //get a RegisterResult object from the UserService

@@ -25,7 +25,7 @@ public class GamesHandler {
 
     public String handleCreateGame(String authToken, String jsonFromServer) throws dataaccess.DataAccessException {
         CreateGameRequest createGameRequest = serializer.fromJson(jsonFromServer,CreateGameRequest.class);
-        if (createGameRequest.getGameName() == null){
+        if (createGameRequest.gameName() == null){
             throw new dataaccess.DataAccessException("Invalid request");
         }
         CreateGameResult createGameResult = gamesService.createGame(authToken, createGameRequest);
@@ -35,7 +35,7 @@ public class GamesHandler {
 
     public String handleJoinGame(String authToken, String jsonFromServer) throws dataaccess.DataAccessException {
         JoinGameRequest joinGameRequest = serializer.fromJson(jsonFromServer,JoinGameRequest.class);
-        if (joinGameRequest.getPlayerColor() == null || joinGameRequest.getGameID() < 1){
+        if (joinGameRequest.playerColor() == null || joinGameRequest.gameID() < 1){
             throw new DataAccessException("Invalid request");
         }
         JoinGameResult joinGameResult = gamesService.joinGame(authToken,joinGameRequest);

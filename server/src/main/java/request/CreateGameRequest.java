@@ -2,19 +2,12 @@ package request;
 
 import java.util.Objects;
 
-public class CreateGameRequest {
+/**
+ * @param gameName private final String authToken;
+ */
+public record CreateGameRequest(String gameName) {
 
-    //private final String authToken;
-    private final String gameName;
-
-    public CreateGameRequest (String gameName){
-        //this.authToken = authToken;
-        this.gameName = gameName;
-    }
-
-    public String getGameName() {
-        return gameName;
-    }
+    //this.authToken = authToken;
 
     //public String getAuthToken() {
     //    return authToken;
@@ -28,8 +21,4 @@ public class CreateGameRequest {
         return Objects.equals(gameName, that.gameName);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(gameName);
-    }
 }
