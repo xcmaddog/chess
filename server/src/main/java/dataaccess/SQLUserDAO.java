@@ -2,7 +2,6 @@ package dataaccess;
 
 import com.google.gson.Gson;
 import model.UserData;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -43,8 +42,17 @@ public class SQLUserDAO extends SQLDataBase implements UserDAO {
     }
 
     @Override
-    public boolean isEmpty() {
-        return false;
+    public boolean isEmpty() throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()){
+            String statement = "SELECT id FROM user";
+            try (var ps = conn.prepareStatement(statement)){
+                try (var rs = ps.executeQuery()){
+                    return !rs.next();
+                }
+            }
+        } catch (Exception e) {
+            throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
+        }
     }
 
     private UserData readUser(ResultSet rs) throws SQLException {
