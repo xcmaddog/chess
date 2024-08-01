@@ -6,11 +6,11 @@ import model.GameInfo;
 import java.util.Collection;
 
 public interface GameDAO {
-    void createGame(GameData gameData);
-    GameData getGame(int gameID);
-    Collection<GameData> listGames();
-    Collection<GameInfo> listGameInfo();
-    void updateGame(GameData gameData);
-    void clear();
-    boolean isEmpty();
+    void createGame(GameData gameData) throws DataAccessException;
+    GameData getGame(int gameID) throws DataAccessException;
+    Collection<GameData> listGames() throws DataAccessException;
+    Collection<GameInfo> listGameInfo() throws DataAccessException;
+    void updateGame(GameData gameData) throws DataAccessException;
+    void clear() throws DataAccessException;
+    boolean isEmpty() throws DataAccessException;
 }

@@ -16,6 +16,13 @@ public class GameInfo {
         setBlackUsername(gameData.getBlackUsername());
     }
 
+    public GameInfo(int gameID, String gameName, String whiteUsername, String blackUsername){
+        setGameID(gameID);
+        setGameName(gameName);
+        setWhiteUsername(whiteUsername);
+        setBlackUsername(blackUsername);
+    }
+
     public int getGameID() {
         return gameID;
     }
