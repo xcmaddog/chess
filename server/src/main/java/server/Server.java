@@ -16,11 +16,11 @@ public class Server {
     private final UserHandler userHandler;
     private final GamesHandler gameHandler;
 
-    public Server(){
-        UserDAO userDAO = new MemoryUserDAO();
-        GameDAO gameDAO = new MemoryGameDAO();
+    public Server() throws DataAccessException {
+        UserDAO userDAO = new SQLUserDAO();
+        GameDAO gameDAO = new SQLGameDAO();
         //the server stores the location of all the data access objects
-        AuthDAO authDAO = new MemoryAuthDAO();
+        AuthDAO authDAO = new SQLAuthDAO();
         this.clearHandler = new ClearHandler(userDAO, gameDAO, authDAO);
         this.userHandler = new UserHandler(userDAO, gameDAO, authDAO);
         this.gameHandler = new GamesHandler(userDAO, gameDAO, authDAO);
