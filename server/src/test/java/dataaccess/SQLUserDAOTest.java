@@ -49,7 +49,7 @@ class SQLUserDAOTest {
     }
 
     @Test
-    void createUser() throws DataAccessException {
+    void createUserPositive() throws DataAccessException {
         SQLUserDAO theDAO = new SQLUserDAO();
 
         UserData newUser = new UserData("secondUser", "secondPass", "just@email.com");
@@ -68,6 +68,15 @@ class SQLUserDAOTest {
         }
 
         assertEquals(newUser, result);
+    }
+
+    @Test
+    void createUserNegative() throws DataAccessException {
+        SQLUserDAO theDAO = new SQLUserDAO();
+
+        UserData previousUser = new UserData("firstUser", "thisDoesn'tMatter", "my@email.com");
+
+        assertThrows(Exception.class, () -> theDAO.createUser(previousUser));
     }
 
     @Test

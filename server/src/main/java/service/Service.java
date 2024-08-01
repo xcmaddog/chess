@@ -29,6 +29,11 @@ public class Service {
     }
 
     public boolean isAuthorized(String authToken){
-        return authDAO.getAuth(authToken) != null;
+        try{
+            return authDAO.getAuth(authToken) != null;
+        }
+        catch(Exception e){
+            return false;
+        }
     }
 }
