@@ -62,15 +62,7 @@ public class SQLGameDAO extends SQLAuthDAO implements GameDAO{
             var statement = "SELECT * FROM game";
             try (var ps = conn.prepareStatement(statement)) {
                 try (var rs = ps.executeQuery()) {
-                    boolean more = true;
-                    while (more) {
-                        GameData gameData = readGame(rs);
-                        if(gameData == null){
-                            more = false;
-                        }else{
-                            result.add(gameData);
-                        }
-                    }
+                    result = dataListMaker(rs);
                     return result;
                 }
             }
@@ -86,15 +78,7 @@ public class SQLGameDAO extends SQLAuthDAO implements GameDAO{
             var statement = "SELECT id, gamename, whiteusername, blackusername FROM game";
             try (var ps = conn.prepareStatement(statement)) {
                 try (var rs = ps.executeQuery()) {
-                    boolean more = true;
-                    while (more) {
-                        GameInfo gameInfo = readInfo(rs);
-                        if(gameInfo == null){
-                            more = false;
-                        }else{
-                            result.add(gameInfo);
-                        }
-                    }
+                    result = infoListMaker(rs);
                     return result;
                 }
             }
@@ -189,6 +173,34 @@ public class SQLGameDAO extends SQLAuthDAO implements GameDAO{
         } else {
             return null;
         }
+    }
+
+    private HashSet<GameInfo> infoListMaker(ResultSet rs ) throws SQLException {
+        HashSet<GameInfo> result = new HashSet<GameInfo>();
+        boolean more = true;
+        while (more) {
+            GameInfo gameInfo = readInfo(rs);
+            if(gameInfo == null){
+                more = false;
+            }else{
+                result.add(gameInfo);
+            }
+        }
+        return result;
+    }
+
+    private HashSet<GameData> dataListMaker(ResultSet rs ) throws SQLException {
+        HashSet<GameData> result = new HashSet<GameData>();
+        boolean more = true;
+        while (more) {
+            GameData gameData = readGame(rs);
+            if(gameData == null){
+                more = false;
+            }else{
+                result.add(gameData);
+            }
+        }
+        return result;
     }
 
     private final String[] createStatements = {
