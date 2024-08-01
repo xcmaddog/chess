@@ -7,8 +7,13 @@ import java.sql.SQLException;
 
 public class SQLAuthDAO extends SQLDataBase implements AuthDAO{
 
-    public SQLAuthDAO () throws DataAccessException {
-        configureDatabase(createStatements);
+    public SQLAuthDAO () {
+        try{
+            configureDatabase(createStatements);
+        }
+        catch(DataAccessException e){
+            System.out.println("The SQLAuthDAO failed to configure the database");
+        }
     }
 
     @Override

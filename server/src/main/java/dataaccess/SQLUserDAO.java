@@ -7,8 +7,13 @@ import java.sql.SQLException;
 
 public class SQLUserDAO extends SQLDataBase implements UserDAO {
 
-    public SQLUserDAO () throws DataAccessException{
-        configureDatabase(createStatements);
+    public SQLUserDAO () {
+        try{
+            configureDatabase(createStatements);
+        }
+        catch(DataAccessException e){
+            System.out.println("The SQLUserDAO failed to configure the database");
+        }
     }
 
     @Override

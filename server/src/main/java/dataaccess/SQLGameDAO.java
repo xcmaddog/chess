@@ -21,8 +21,13 @@ import java.sql.DriverManager;
 
 public class SQLGameDAO extends SQLAuthDAO implements GameDAO{
 
-    public SQLGameDAO () throws DataAccessException {
-        configureDatabase(createStatements);
+    public SQLGameDAO () {
+        try{
+            configureDatabase(createStatements);
+        }
+        catch(DataAccessException e){
+            System.out.println("The SQLGameDAO failed to configure the database");
+        }
     }
 
     @Override

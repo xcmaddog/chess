@@ -16,24 +16,11 @@ public class Server {
     private final UserHandler userHandler;
     private final GamesHandler gameHandler;
 
-    public Server() throws DataAccessException {
-        UserDAO userDAO = null;
-        AuthDAO authDAO = null;
-        GameDAO gameDAO = null;
-
-        try{
-            userDAO = new SQLUserDAO();
-            gameDAO = new SQLGameDAO();
-            //the server stores the location of all the data access objects
-            authDAO = new SQLAuthDAO();
-        }
-        catch(Exception e){
-            System.out.println("Failed to create database, creating DAO's using memory");
-            userDAO = new MemoryUserDAO();
-            gameDAO = new MemoryGameDAO();
-            //the server stores the location of all the data access objects
-            authDAO = new MemoryAuthDAO();
-        }
+    public Server() {
+        UserDAO userDAO = new SQLUserDAO();
+        GameDAO gameDAO = new SQLGameDAO();
+        //the server stores the location of all the data access objects
+        AuthDAO authDAO = new SQLAuthDAO();
 
         this.clearHandler = new ClearHandler(userDAO, gameDAO, authDAO);
         this.userHandler = new UserHandler(userDAO, gameDAO, authDAO);
