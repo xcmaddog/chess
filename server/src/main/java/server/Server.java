@@ -53,10 +53,15 @@ public class Server {
     private String deleteEverything(Request req, Response res) {
 
         //System.out.println("You made it to the deleteEverything function");
-
-        String result = clearHandler.handleClearAll();
-        res.status(200);
-        return result;
+        try{
+            String result = clearHandler.handleClearAll();
+            res.status(200);
+            return result;
+        }
+        catch (Exception e){
+            res.status(500);
+            return String.format("\"message\": \"Error: %s",e.getMessage());
+        }
     }
 
     private String registerUser(Request req, Response res) {

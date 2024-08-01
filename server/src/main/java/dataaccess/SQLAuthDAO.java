@@ -3,7 +3,7 @@ package dataaccess;
 import model.AuthData;
 import java.sql.DriverManager;
 
-public class SQLAuthDAO implements AuthDAO{
+public class SQLAuthDAO extends SQLDataBase implements AuthDAO{
     @Override
     public void createAuth(AuthData authData) {
 
@@ -28,4 +28,10 @@ public class SQLAuthDAO implements AuthDAO{
     public boolean isEmpty() {
         return false;
     }
+
+    @Override
+    protected void executeUpdate(String statement, Object... params) throws DataAccessException {
+
+    }
+
 }

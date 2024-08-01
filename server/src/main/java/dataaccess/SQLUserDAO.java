@@ -20,19 +20,17 @@ public class SQLUserDAO extends SQLDataBase implements UserDAO {
     @Override
     public UserData getUser(String username) throws DataAccessException{
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT id, json FROM pet WHERE id=?";
+            var statement = "SELECT * FROM user WHERE username=?";
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setString(1, username);
                 try (var rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        return readUser(rs);
-                    }
+                    return readUser(rs);
                 }
             }
         } catch (Exception e) {
             throw new DataAccessException (String.format("Unable to read data: %s", e.getMessage()));
         }
-        return null;
+        //there used to be a return null here
     }
 
     @Override
@@ -44,7 +42,7 @@ public class SQLUserDAO extends SQLDataBase implements UserDAO {
     @Override
     public boolean isEmpty() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()){
-            String statement = "SELECT id FROM user";
+            String statement = "SELECT username FROM user";
             try (var ps = conn.prepareStatement(statement)){
                 try (var rs = ps.executeQuery()){
                     return !rs.next();
@@ -55,22 +53,25 @@ public class SQLUserDAO extends SQLDataBase implements UserDAO {
         }
     }
 
-    private UserData readUser(ResultSet rs) throws SQLException {
-        String json = rs.getString("json");
-        UserData userData = new Gson().fromJson(json, UserData.class);
-        return userData;
+    public UserData readUser(ResultSet rs) throws SQLException {
+        if (rs.next()){
+            String username = rs.getString("username");
+            String password = rs.getString("password");
+            String email = rs.getString("email");
+            UserData userData = new UserData(username,password,email);
+            return userData;
+        } else {
+            return null;
+        }
     }
 
     private final String[] createStatements = {
             """
             CREATE TABLE IF NOT EXISTS  user (
-              `id` int NOT NULL AUTO_INCREMENT,
-              `username` varchar(255) NOT NULL,
-              `password` varchar(255) NOT NULL,
-              'email' varchar(255) NOT NULL,
-              'json' TEXT DEFAULT NULL,
-              PRIMARY KEY (`id`),
-              INDEX(username)
+              username VARCHAR(255) NOT NULL,
+              password VARCHAR(255) NOT NULL,
+              email VARCHAR(255) NOT NULL,
+              PRIMARY KEY (username)
             )"""
     };
 

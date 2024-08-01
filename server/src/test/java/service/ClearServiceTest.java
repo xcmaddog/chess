@@ -4,6 +4,7 @@ import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessPosition;
 import chess.InvalidMoveException;
+import dataaccess.DataAccessException;
 import dataaccess.MemoryAuthDAO;
 import dataaccess.MemoryGameDAO;
 import dataaccess.MemoryUserDAO;
@@ -18,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ClearServiceTest {
 
     @Test
-    void clearAll() throws InvalidMoveException {
+    void clearAll() throws InvalidMoveException, DataAccessException {
         MemoryUserDAO memoryUserDAO = new MemoryUserDAO();
         MemoryAuthDAO memoryAuthDAO = new MemoryAuthDAO();
         MemoryGameDAO memoryGameDAO = new MemoryGameDAO();

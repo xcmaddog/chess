@@ -2,6 +2,7 @@ package handler;
 
 import com.google.gson.Gson;
 import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import request.ClearRequest;
@@ -20,7 +21,7 @@ public class ClearHandler {
         this.authDAO = authDAO;
     }
 
-    public String handleClearAll(){
+    public String handleClearAll() throws DataAccessException {
 
         //System.out.println("You made it to the handleClearAll function");
 

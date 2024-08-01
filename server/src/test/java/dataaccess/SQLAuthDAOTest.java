@@ -1,13 +1,23 @@
 package dataaccess;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class SQLAuthDAOTest {
 
+    @BeforeAll
+    static void setup() throws DataAccessException {
+        DatabaseManager.createDatabase();
+    }
+
     @Test
-    void createAuth() {
+    void createAuthPositive() {
+    }
+
+    @Test
+    void createAuthNegative() {
     }
 
     @Test
