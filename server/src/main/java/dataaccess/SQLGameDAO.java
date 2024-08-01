@@ -100,7 +100,7 @@ public class SQLGameDAO extends SQLAuthDAO implements GameDAO{
 
     @Override
     public void updateGame(GameData gameData) throws DataAccessException {
-        if (){
+        if (getGame(gameData.getGameID()) == null){
             throw new DataAccessException("The game you are trying to update does not exist");
         }
 
