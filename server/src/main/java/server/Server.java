@@ -17,10 +17,24 @@ public class Server {
     private final GamesHandler gameHandler;
 
     public Server() throws DataAccessException {
-        UserDAO userDAO = new SQLUserDAO();
-        GameDAO gameDAO = new SQLGameDAO();
-        //the server stores the location of all the data access objects
-        AuthDAO authDAO = new SQLAuthDAO();
+        UserDAO userDAO = null;
+        AuthDAO authDAO = null;
+        GameDAO gameDAO = null;
+
+        try{
+            userDAO = new SQLUserDAO();
+            gameDAO = new SQLGameDAO();
+            //the server stores the location of all the data access objects
+            authDAO = new SQLAuthDAO();
+        }
+        catch(Exception e){
+            System.out.println("Failed to create database, creating DAO's using memory");
+            userDAO = new MemoryUserDAO();
+            gameDAO = new MemoryGameDAO();
+            //the server stores the location of all the data access objects
+            authDAO = new MemoryAuthDAO();
+        }
+
         this.clearHandler = new ClearHandler(userDAO, gameDAO, authDAO);
         this.userHandler = new UserHandler(userDAO, gameDAO, authDAO);
         this.gameHandler = new GamesHandler(userDAO, gameDAO, authDAO);
@@ -71,7 +85,7 @@ public class Server {
             res.status(200);
             return result;
         }
-        catch(dataaccess.DataAccessException dataAccessException){
+        catch(DataAccessException dataAccessException){
             if(Objects.equals(dataAccessException.getMessage(), "A user with that username already exists")){
                 res.status(403);
                 return "{ \"message\": \"Error: already taken\" }";
@@ -97,7 +111,7 @@ public class Server {
            String result = userHandler.handleLogin(req.body());
            res.status(200);
            return result;
-        }catch (dataaccess.DataAccessException dataAccessException) {
+        }catch (DataAccessException dataAccessException) {
             if(Objects.equals(dataAccessException.getMessage(), "The password provided was incorrect")){
                 res.status(401);
                 return "{ \"message\": \"Error: unauthorized\" }";
@@ -117,7 +131,7 @@ public class Server {
             String result = userHandler.handleLogout(theAuthToken);
             res.status(200);
             return result;
-        }catch(dataaccess.DataAccessException dataAccessException){
+        }catch(DataAccessException dataAccessException){
             if (Objects.equals(dataAccessException.getMessage(), "The authToken was not recognized")){
                 res.status(401);
                 return "{ \"message\": \"Error: unauthorized\" }";
@@ -135,7 +149,7 @@ public class Server {
             res.status(200);
             return result;
         }
-        catch (dataaccess.DataAccessException dataAccessException){
+        catch (DataAccessException dataAccessException){
             if (Objects.equals(dataAccessException.getMessage(), "Invalid AuthToken")){
                 res.status(401);
                 return "{ \"message\": \"Error: unauthorized\" }";
@@ -156,7 +170,7 @@ public class Server {
             res.status(200);
             return result;
         }
-        catch (dataaccess.DataAccessException dataAccessException){
+        catch (DataAccessException dataAccessException){
             if(Objects.equals(dataAccessException.getMessage(), "Invalid request")){
                 res.status(400);
                 return "{ \"message\": \"Error: bad request\" }";
@@ -184,7 +198,7 @@ public class Server {
             res.status(200);
             return result;
         }
-        catch(dataaccess.DataAccessException dataAccessException){
+        catch(DataAccessException dataAccessException){
             if (Objects.equals(dataAccessException.getMessage(), "Invalid AuthToken")){
                 res.status(401);
                 return "{ \"message\": \"Error: unauthorized\" }";

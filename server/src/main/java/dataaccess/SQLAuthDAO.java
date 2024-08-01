@@ -81,8 +81,7 @@ public class SQLAuthDAO extends SQLDataBase implements AuthDAO{
             CREATE TABLE IF NOT EXISTS  auth (
               authtoken VARCHAR(255) NOT NULL,
               username VARCHAR(255) NOT NULL,
-              PRIMARY KEY (authtoken),
-              UNIQUE(username)
+              PRIMARY KEY (authtoken)
             )"""
     };
 
