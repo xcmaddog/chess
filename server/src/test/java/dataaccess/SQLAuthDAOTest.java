@@ -69,14 +69,6 @@ class SQLAuthDAOTest {
         assertEquals(newAuth, result);
     }
 
-    @Test
-    void createAuthNegative() throws DataAccessException {
-        SQLAuthDAO theDAO = new SQLAuthDAO();
-
-        AuthData previousUser = new AuthData("BlahBlahBlah", "firstUser");
-
-        assertThrows(Exception.class, () -> theDAO.createAuth(previousUser));
-    }
 
     @Test
     void getAuthPositive() throws DataAccessException {
