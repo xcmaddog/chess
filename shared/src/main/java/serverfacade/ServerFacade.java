@@ -47,6 +47,12 @@ public class ServerFacade {
         return authToken;
     }
 
+    public void clear() throws DataAccessException {
+        String method = "DELETE";
+        String path = "/db";
+        this.makeRequest(method, path, null,null, null);
+    }
+
     //helper methods
 
     private <T> T makeRequest (String method, String path, Object request, Class<T> responseClass, String authToken)

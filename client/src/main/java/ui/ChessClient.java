@@ -39,11 +39,19 @@ public class ChessClient {
             };
         }catch(DataAccessException e){
             String errorMsg = e.getMessage();
-            switch (e.getMessage()){
-                case "failure: 401": { return "Error: unauthorized"; }
-                case "failure: 400": {return "Error: bad request";}
-                case "failure: 403": {return "Error: already taken";}
-                case "failure: 500": {return "Error: (description of error)";}
+            var errorWords = errorMsg.split(" ");
+            var errorCode = errorWords[1];
+            switch (errorCode){
+                case "401": { return "Error: unauthorized"; }
+                case "400": {return "Error: bad request";}
+                case "403": {return "Error: already taken";}
+                case "500": {
+                    StringBuilder description = new StringBuilder();
+                    for(int i = 2; i < errorWords.length; i++){
+                        description.append(errorWords[i]);
+                    }
+                    return String.format("Error: %s", description.toString());
+                }
                 default: return "Madsen needs to work on his code";
             }
         }
@@ -57,21 +65,15 @@ public class ChessClient {
         if (signedIn){
             throw new Exception("You are already logged in.");
         }
-        try{
-            if (params.length == 2){
-                String username = params[0];
-                String password = params[1];
-                LoginRequest loginRequest = new LoginRequest(username, password);
-                String authToken = server.login(loginRequest);
-                this.username = username;
-                this.authToken = authToken;
-                signedIn = true;
-                return String.format("You signed in as %s", this.username);
-            }
-        }
-        catch (DataAccessException e){
-            String errorMsg = e.getMessage();
-            return errorMsg;
+        if (params.length == 2){
+            String username = params[0];
+            String password = params[1];
+            LoginRequest loginRequest = new LoginRequest(username, password);
+            String authToken = server.login(loginRequest);
+            this.username = username;
+            this.authToken = authToken;
+            signedIn = true;
+            return String.format("You signed in as %s", this.username);
         }
         throw new Exception("Expected login info as <username> <password>");
     }
@@ -105,19 +107,40 @@ public class ChessClient {
         throw new Exception("Expected register info as <username> <password> <email>");
     }
 
+    public String createGame(String... params){
+        return null;
+    }
+
+    public String listGames(){
+        return null;
+    }
+
+    public String joinGame(String... params){
+        return null;
+    }
+
+    public String observeGame(String... params){
+        return null;
+    }
+
     public String help(){
         if (signedIn){
-            return String.format("LOGGED IN AS: %s n/" +
-                    "create <GAME_NAME> - create a game \n" +
-                    "list - to list all of the chess games \n" +
-                    "join <GAME_ID> [WHITE|BLACK] - to join a chess game \n" +
-                    "observe <GAME_ID> - to observe a chess game \n" +
-                    "logout - to log out \n" +
-                    "quit - to log out and quit playing chess \n" +
-                    "help - to display the possible commands", username);
+            return String.format("""
+                    LOGGED IN AS: %s\s
+                    create <GAME_NAME> - create a game\s
+                    list - to list all of the chess games\s
+                    join <GAME_ID> [WHITE|BLACK] - to join a chess game\s
+                    observe <GAME_ID> - to observe a chess game\s
+                    logout - to log out\s
+                    quit - to log out and quit playing chess\s
+                    help - to display the possible commands""", username);
         }else{
             return preloginHelp;
         }
+    }
+
+    public boolean isSignedIn(){
+        return signedIn;
     }
 
     private final String preloginHelp = "register <USERNAME> <PASSWORD> <EMAIL> - to create and account \n" +
