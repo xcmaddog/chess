@@ -3,9 +3,11 @@ package ui;
 import dataaccess.DataAccessException;
 import request.LoginRequest;
 import request.LogoutRequest;
+import request.RegisterRequest;
 import serverfacade.ServerFacade;
 
 import java.util.Arrays;
+import java.util.ResourceBundle;
 
 public class ChessClient {
 
@@ -31,15 +33,19 @@ public class ChessClient {
             return switch (cmd) {
                 case "login" -> login(params);
                 case "logout" -> logout();
+                case "register" -> register(params);
                 case "quit" -> "quit";
                 default -> help();
             };
-        } catch (DataAccessException ex) {
+        } catch (Exception ex) {
             return ex.getMessage();
         }
     }
 
-    public String login(String... params) throws DataAccessException {
+    public String login(String... params) throws Exception {
+        if (signedIn){
+            throw new Exception("You are already logged in.");
+        }
         if (params.length == 2){
             String username = params[0];
             String password = params[1];
@@ -50,7 +56,7 @@ public class ChessClient {
             signedIn = true;
             return String.format("You signed in as %s", this.username);
         }
-        throw new DataAccessException("Expected login info as <username> <password>");
+        throw new Exception("Expected login info as <username> <password>");
     }
 
     public String logout() throws DataAccessException {
@@ -60,6 +66,25 @@ public class ChessClient {
         this.username = null;
         this.authToken = null;
         return String.format("You logged out %s", username);
+    }
+
+    public String register(String... params) throws Exception {
+        if (signedIn){
+            throw new Exception("You are already logged in.");
+        }
+        if (params.length == 3){
+            String username = params[0];
+            String password = params[1];
+            String email = params[2];
+            RegisterRequest registerRequest = new RegisterRequest(username, password, email);
+            String authToken = server.register(registerRequest);
+            this.username = username;
+            this.authToken = authToken;
+            signedIn = true;
+            return String.format("You created a new user: %s, and are now signed in as %s",
+                    this.username, this.username);
+        }
+        throw new Exception("Expected register info as <username> <password> <email>");
     }
 
     public String help(){

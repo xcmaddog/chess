@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import dataaccess.DataAccessException; //I may want to move the data access exception to shared
 import request.LoginRequest;
 import request.LogoutRequest;
+import request.RegisterRequest;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,6 +34,12 @@ public class ServerFacade {
         String method = "DELETE";
         String path = "/session";
         this.makeRequest(method, path, logoutRequest, null);
+    }
+
+    public String register(RegisterRequest registerRequest) throws DataAccessException {
+        String method = "POST";
+        String path = "/user";
+        return this.makeRequest(method, path, registerRequest, String.class);
     }
 
     //helper methods
