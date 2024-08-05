@@ -46,15 +46,20 @@ public class ChessClient {
         if (signedIn){
             throw new Exception("You are already logged in.");
         }
-        if (params.length == 2){
-            String username = params[0];
-            String password = params[1];
-            LoginRequest loginRequest = new LoginRequest(username, password);
-            String authToken = server.login(loginRequest);
-            this.username = username;
-            this.authToken = authToken;
-            signedIn = true;
-            return String.format("You signed in as %s", this.username);
+        try{
+            if (params.length == 2){
+                String username = params[0];
+                String password = params[1];
+                LoginRequest loginRequest = new LoginRequest(username, password);
+                String authToken = server.login(loginRequest);
+                this.username = username;
+                this.authToken = authToken;
+                signedIn = true;
+                return String.format("You signed in as %s", this.username);
+            }
+        }
+        catch (DataAccessException e){
+            return e.getMessage();
         }
         throw new Exception("Expected login info as <username> <password>");
     }

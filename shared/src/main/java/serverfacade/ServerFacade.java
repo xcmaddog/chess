@@ -5,6 +5,7 @@ import dataaccess.DataAccessException; //I may want to move the data access exce
 import request.LoginRequest;
 import request.LogoutRequest;
 import request.RegisterRequest;
+import result.RegisterResult;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,7 +40,9 @@ public class ServerFacade {
     public String register(RegisterRequest registerRequest) throws DataAccessException {
         String method = "POST";
         String path = "/user";
-        return this.makeRequest(method, path, registerRequest, String.class);
+        RegisterResult registerResult = this.makeRequest(method, path, registerRequest, RegisterResult.class);
+        String authToken = registerResult.authToken();
+        return authToken;
     }
 
     //helper methods
@@ -59,7 +62,7 @@ public class ServerFacade {
 
         }
         catch (Exception e) {
-            throw new DataAccessException(e.getMessage());
+                throw new DataAccessException(e.getMessage());
         }
     }
 
@@ -86,6 +89,7 @@ public class ServerFacade {
             try(InputStream respBody = http.getInputStream()){
                 InputStreamReader reader = new InputStreamReader(respBody);
                 if (responseClass != null){
+                    System.out.println(reader);
                     response = new Gson().fromJson(reader, responseClass);
                 }
             }
