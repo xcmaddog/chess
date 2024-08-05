@@ -37,8 +37,19 @@ public class ChessClient {
                 case "quit" -> "quit";
                 default -> help();
             };
-        } catch (Exception ex) {
-            return ex.getMessage();
+        }catch(DataAccessException e){
+            String errorMsg = e.getMessage();
+            switch (e.getMessage()){
+                case "failure: 401": { return "Error: unauthorized"; }
+                case "failure: 400": {return "Error: bad request";}
+                case "failure: 403": {return "Error: already taken";}
+                case "failure: 500": {return "Error: (description of error)";}
+                default: return "Madsen needs to work on his code";
+            }
+        }
+        catch (Exception ex) {
+            String errorMsg =  ex.getMessage();
+            return errorMsg;
         }
     }
 
@@ -59,7 +70,8 @@ public class ChessClient {
             }
         }
         catch (DataAccessException e){
-            return e.getMessage();
+            String errorMsg = e.getMessage();
+            return errorMsg;
         }
         throw new Exception("Expected login info as <username> <password>");
     }
@@ -70,6 +82,7 @@ public class ChessClient {
         String username = this.username;
         this.username = null;
         this.authToken = null;
+        this.signedIn = false;
         return String.format("You logged out %s", username);
     }
 
@@ -95,21 +108,21 @@ public class ChessClient {
     public String help(){
         if (signedIn){
             return String.format("LOGGED IN AS: %s n/" +
-                    "create <GAME_NAME> - create a game n/" +
-                    "list - to list all of the chess games n/" +
-                    "join <GAME_ID> [WHITE|BLACK] - to join a chess game n/" +
-                    "observe <GAME_ID> - to observe a chess game n/" +
-                    "logout - to log out n/" +
-                    "quit - to log out and quit playing chess n/" +
+                    "create <GAME_NAME> - create a game \n" +
+                    "list - to list all of the chess games \n" +
+                    "join <GAME_ID> [WHITE|BLACK] - to join a chess game \n" +
+                    "observe <GAME_ID> - to observe a chess game \n" +
+                    "logout - to log out \n" +
+                    "quit - to log out and quit playing chess \n" +
                     "help - to display the possible commands", username);
         }else{
             return preloginHelp;
         }
     }
 
-    private final String preloginHelp = "register <USERNAME> <PASSWORD> <EMAIL> - to create and account n/" +
-            "login <USERNAME> <PASSWORD> - to play chess n/" +
-            "quit - to quit playing chess n/" +
+    private final String preloginHelp = "register <USERNAME> <PASSWORD> <EMAIL> - to create and account \n" +
+            "login <USERNAME> <PASSWORD> - to play chess \n" +
+            "quit - to quit playing chess \n" +
             "help - to display the possible commands";
 
 

@@ -5,6 +5,7 @@ import dataaccess.DataAccessException; //I may want to move the data access exce
 import request.LoginRequest;
 import request.LogoutRequest;
 import request.RegisterRequest;
+import result.LoginResult;
 import result.RegisterResult;
 
 import java.io.IOException;
@@ -28,32 +29,37 @@ public class ServerFacade {
     public String login(LoginRequest loginRequest) throws DataAccessException {
         String method = "POST";
         String path = "/session";
-        return this.makeRequest(method, path, loginRequest, String.class);
+        LoginResult loginResult = this.makeRequest(method, path, loginRequest, LoginResult.class, null);
+        return loginResult.authToken();
     }
 
     public void logout(LogoutRequest logoutRequest) throws DataAccessException {
         String method = "DELETE";
         String path = "/session";
-        this.makeRequest(method, path, logoutRequest, null);
+        this.makeRequest(method, path, logoutRequest, null, logoutRequest.authToken());
     }
 
     public String register(RegisterRequest registerRequest) throws DataAccessException {
         String method = "POST";
         String path = "/user";
-        RegisterResult registerResult = this.makeRequest(method, path, registerRequest, RegisterResult.class);
+        RegisterResult registerResult = this.makeRequest(method, path, registerRequest, RegisterResult.class, null);
         String authToken = registerResult.authToken();
         return authToken;
     }
 
     //helper methods
 
-    private <T> T makeRequest (String method, String path, Object request, Class<T> responseClass)
+    private <T> T makeRequest (String method, String path, Object request, Class<T> responseClass, String authToken)
             throws DataAccessException {
         try{
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
+
+            if (authToken != null){
+                writeHeader(authToken, http);
+            }
 
             writeBody(request, http);
             http.connect();
@@ -64,6 +70,10 @@ public class ServerFacade {
         catch (Exception e) {
                 throw new DataAccessException(e.getMessage());
         }
+    }
+
+    private static void writeHeader(String authToken, HttpURLConnection http){
+        http.addRequestProperty("authorization", authToken);
     }
 
     private static void writeBody(Object request, HttpURLConnection http) throws IOException{
@@ -89,7 +99,6 @@ public class ServerFacade {
             try(InputStream respBody = http.getInputStream()){
                 InputStreamReader reader = new InputStreamReader(respBody);
                 if (responseClass != null){
-                    System.out.println(reader);
                     response = new Gson().fromJson(reader, responseClass);
                 }
             }
