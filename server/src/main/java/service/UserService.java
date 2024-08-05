@@ -13,7 +13,6 @@ import result.RegisterResult;
 import model.AuthData;
 import model.UserData;
 
-import java.util.Objects;
 import java.util.UUID;
 
 public class UserService extends Service{
