@@ -6,9 +6,11 @@ import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import dataaccess.DataAccessException;
 import request.CreateGameRequest;
+import request.GetGameRequest;
 import request.JoinGameRequest;
 import request.ListGamesRequest;
 import result.CreateGameResult;
+import result.GetGameResult;
 import result.JoinGameResult;
 import result.ListGamesResult;
 import service.GamesService;
@@ -47,6 +49,16 @@ public class GamesHandler {
         ListGamesRequest listGamesRequest = new ListGamesRequest(authToken);
         ListGamesResult listGamesResult = gamesService.getGames(listGamesRequest);
         String jsonToReturn = serializer.toJson(listGamesResult);
+        return jsonToReturn;
+    }
+
+    public String handleGetGame(String authToken, String jsonFromServer) throws DataAccessException {
+        GetGameRequest getGameRequest = serializer.fromJson(jsonFromServer, GetGameRequest.class);
+        if (getGameRequest.gameID() <= 0){
+            throw new dataaccess.DataAccessException("Invalid request");
+        }
+        GetGameResult getGameResult = gamesService.getGame(authToken, getGameRequest);
+        String jsonToReturn = serializer.toJson(getGameResult);
         return jsonToReturn;
     }
 
