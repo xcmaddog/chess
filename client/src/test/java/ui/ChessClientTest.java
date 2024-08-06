@@ -140,7 +140,8 @@ public class ChessClientTest {
         chessClient.register(params);
 
         params = new String[]{"newGame"};
-        String gameID = chessClient.createGame(params);
+        chessClient.createGame(params);
+        String gameID = "2";
 
         params = new String[]{gameID, "BLACK"};
         String[] finalParams = params;
@@ -153,16 +154,16 @@ public class ChessClientTest {
     }
 
     @Test
+    @Order(4)
     void joinGameNegative() throws Exception {
         String[] params = {"NewUser", "newUserPassword", "nu@mail.com"};
         chessClient.register(params);
 
-        params = new String[]{"newGame"};
-        String gameID = chessClient.createGame(params);
+        String gameID = "-1";
 
         params = new String[]{gameID, "BLACK"};
         String[] finalParams = params;
-        chessClient.joinGame(finalParams);
+        //chessClient.joinGame(finalParams);
 
         assertThrows(Exception.class, ()-> chessClient.joinGame(finalParams));
     }

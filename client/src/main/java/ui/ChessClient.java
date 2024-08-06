@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessGame;
 import dataaccess.DataAccessException;
 import request.*;
 import serverfacade.ServerFacade;
@@ -34,8 +35,8 @@ public class ChessClient {
                 case "register" : { yield register(params);}
                 case "create" : { yield createGame(params);}
                 case "list" : { yield listGames();}
-                case "join" : { yield joinGame();}
-                case "observe": { yield observeGame();}
+                case "join" : { yield joinGame(params);}
+                case "observe": { yield observeGame(params);}
                 case "quit" : {
                     if(signedIn){
                         String s = logout() + "\nquit";
@@ -141,11 +142,32 @@ public class ChessClient {
         return listedGames;
     }
 
-    public String joinGame(String... params){
-        return null;
+    public String joinGame(String... params) throws Exception {
+        if (!signedIn){
+            throw new Exception("You need to be signed in to list the games");
+        }
+        if(params.length == 2){
+            String theID = params[0];
+            int gameID = Integer.parseInt(theID);
+            ChessGame.TeamColor teamColor;
+            if (params[1].equalsIgnoreCase("BLACK")){
+                teamColor = ChessGame.TeamColor.BLACK;
+            } else if (params[1].equalsIgnoreCase("WHITE")){
+                teamColor = ChessGame.TeamColor.WHITE;
+            } else{
+                throw new Exception("Expected to join either \"WHITE\" or \"BLACK\" team");
+            }
+            JoinGameRequest joinGameRequest = new JoinGameRequest(teamColor, gameID);
+            String result = server.joinGame(joinGameRequest, authToken);
+            return result;
+        }
+        throw new Exception("Expected join info as <gameID> [BLACK|WHITE]");
     }
 
-    public String observeGame(String... params){
+    public String observeGame(String... params) throws Exception {
+        if (!signedIn){
+            throw new Exception("You need to be signed in to list the games");
+        }
         return null;
     }
 
@@ -158,7 +180,7 @@ public class ChessClient {
                     join <GAME_ID> [WHITE|BLACK] - to join a chess game\s
                     observe <GAME_ID> - to observe a chess game\s
                     logout - to log out\s
-                    quit - to log out and quit playing chess\s
+                    quit - to log out, type quit a second time to quit playing\s
                     help - to display the possible commands""", username);
         }else{
             return preloginHelp;

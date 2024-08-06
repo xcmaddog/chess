@@ -54,25 +54,30 @@ public class GamesService extends Service{
         if (gameData == null){
             throw new DataAccessException("Game not found");
         }
-        ChessGame.TeamColor color = joinGameRequest.playerColor();
-        if(color == ChessGame.TeamColor.WHITE){
-            if(gameData.getWhiteUsername() != null){
-                throw new DataAccessException("There is already someone playing white in this game");
+        try {
+            ChessGame.TeamColor color = joinGameRequest.playerColor();
+            if (color == ChessGame.TeamColor.WHITE) {
+                if (gameData.getWhiteUsername() != null) {
+                    throw new DataAccessException("There is already someone playing white in this game");
+                }
+                String username = authDAO.getAuth(authToken).username();
+                GameData newData = new GameData(gameData.getGameID(), gameData.getGameName(), gameData.getGame(), username, gameData.getBlackUsername());
+                gameDAO.updateGame(newData);
+                JoinGameResult joinGameResult = new JoinGameResult();
+                return joinGameResult;
+            } else {
+                if (gameData.getBlackUsername() != null) {
+                    throw new DataAccessException("There is already someone playing black in this game");
+                }
+                String username = authDAO.getAuth(authToken).username();
+                GameData newData = new GameData(gameData.getGameID(), gameData.getGameName(), gameData.getGame(), gameData.getWhiteUsername(), username);
+                gameDAO.updateGame(newData);
+                JoinGameResult joinGameResult = new JoinGameResult();
+                return joinGameResult;
             }
-            String username = authDAO.getAuth(authToken).username();
-            GameData newData = new GameData(gameData.getGameID(), gameData.getGameName(),gameData.getGame(), username, gameData.getBlackUsername());
-            gameDAO.updateGame(newData);
-            JoinGameResult joinGameResult = new JoinGameResult();
-            return joinGameResult;
-        } else {
-            if (gameData.getBlackUsername() != null){
-                throw new DataAccessException("There is already someone playing black in this game");
-            }
-            String username = authDAO.getAuth(authToken).username();
-            GameData newData = new GameData(gameData.getGameID(), gameData.getGameName(),gameData.getGame(), gameData.getWhiteUsername(), username);
-            gameDAO.updateGame(newData);
-            JoinGameResult joinGameResult = new JoinGameResult();
         }
-        throw new DataAccessException("Sorry, something went wrong when trying to join the game");
+        catch(DataAccessException e){
+            throw new DataAccessException("Sorry, something went wrong when trying to join the game");
+        }
     }
 }

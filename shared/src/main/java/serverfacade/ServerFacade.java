@@ -4,10 +4,7 @@ import com.google.gson.Gson;
 import dataaccess.DataAccessException; //I may want to move the data access exception to shared
 import model.GameInfo;
 import request.*;
-import result.CreateGameResult;
-import result.ListGamesResult;
-import result.LoginResult;
-import result.RegisterResult;
+import result.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -72,6 +69,16 @@ public class ServerFacade {
         listedGames.deleteCharAt(listedGames.length()-1);
         //listedGames.deleteCharAt(listedGames.length()-1);
         return listedGames.toString();
+    }
+
+    public String joinGame(JoinGameRequest joinGameRequest, String authToken) throws DataAccessException {
+        String method = "PUT";
+        String path = "/game";
+        JoinGameResult joinGameResult = this.makeRequest(method, path, joinGameRequest,
+                JoinGameResult.class, authToken);
+        String result = String.format("You successfully joined game %s as the %s player",
+                joinGameRequest.gameID(),joinGameRequest.playerColor().toString());
+        return result;
     }
 
     public void clear() throws DataAccessException {
@@ -165,10 +172,10 @@ public class ServerFacade {
         if(blackUsername == null){
             resultBuilder.append("             ");
         } else if(blackUsername.length() >= 13){
-            resultBuilder.append(gameID, 0, 10).append("...");
+            resultBuilder.append(blackUsername, 0, 10).append("...");
         }else{
             resultBuilder.append(" ".repeat((13 - blackUsername.length())));
-            resultBuilder.append(gameID);
+            resultBuilder.append(blackUsername);
         }
         resultBuilder.append("|");
         if(gameName.length() > 8){
