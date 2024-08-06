@@ -40,6 +40,7 @@ public class Server {
         Spark.post("/game", this::createGame);
         Spark.put("/game", this::joinGame);
         Spark.get("/game", this::listGames);
+        Spark.get("/observe", this::getGame);
 
 
         Spark.awaitInitialization();
@@ -62,6 +63,24 @@ public class Server {
         catch (Exception e){
             res.status(500);
             return String.format("\"message\": \"Error: %s",e.getMessage());
+        }
+    }
+
+    private String getGame(Request req, Response res){
+        try{
+            String theAuthToken = req.headers("authorization");
+            String result = gameHandler.getGame(theAuthToken, req.body());
+            res.status(200);
+            return result;
+        }
+        catch(DataAccessException dataAccessException){
+            if (Objects.equals(dataAccessException.getMessage(), "The authToken was not recognized")){
+                res.status(401);
+                return "{ \"message\": \"Error: unauthorized\" }";
+            }else{
+                res.status(500);
+                return "{ \"message\": \"Error: " + dataAccessException.getMessage() + "\" }";
+            }
         }
     }
 
