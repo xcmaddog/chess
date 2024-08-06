@@ -39,7 +39,7 @@ public class Server {
         Spark.delete("/session", this::logoutUser);
         Spark.post("/game", this::createGame);
         Spark.put("/game", this::joinGame);
-        Spark.get("/game", this::getGameOptions);
+        Spark.get("/game", this::listGames);
 
 
         Spark.awaitInitialization();
@@ -49,14 +49,6 @@ public class Server {
     public void stop() {
         Spark.stop();
         Spark.awaitStop();
-    }
-
-    private String getGameOptions(Request req, Response res){
-        if(req.body() != null){
-            return getGame(req, res);
-        } else{
-            return listGames(req, res);
-        }
     }
 
     private String deleteEverything(Request req, Response res) {
@@ -204,22 +196,5 @@ public class Server {
         }
     }
 
-    private String getGame (Request req, Response res){
-        try {
-            String theAuthToken = req.headers("authorization");
-            String result = gameHandler.handleGetGame(theAuthToken, req.body());
-            res.status(200);
-            return result;
-        }
-        catch(DataAccessException dataAccessException){
-            if (Objects.equals(dataAccessException.getMessage(), "Invalid AuthToken")){
-                res.status(401);
-                return "{ \"message\": \"Error: unauthorized\" }";
-            } else{
-                res.status(500);
-                return "{ \"message\": \"Error: " + dataAccessException.getMessage() + "\" }";
-            }
-        }
-    }
 
 }

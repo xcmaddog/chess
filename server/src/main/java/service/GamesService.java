@@ -8,11 +8,9 @@ import dataaccess.DataAccessException;
 import model.GameData;
 import model.GameInfo;
 import request.CreateGameRequest;
-import request.GetGameRequest;
 import request.JoinGameRequest;
 import request.ListGamesRequest;
 import result.CreateGameResult;
-import result.GetGameResult;
 import result.JoinGameResult;
 import result.ListGamesResult;
 
@@ -78,24 +76,8 @@ public class GamesService extends Service{
                 return joinGameResult;
             }
         }
-
         catch(DataAccessException e){
             throw new DataAccessException("Sorry, something went wrong when trying to join the game");
-        }
-    }
-
-    public GetGameResult getGame(String authToken, GetGameRequest getGameRequest) throws DataAccessException {
-        if(! isAuthorized(authToken)){
-            throw new DataAccessException("Invalid AuthToken");
-        }
-        try{
-            int gameID = getGameRequest.gameID();
-            GameData gameData = gameDAO.getGame(gameID);
-            GetGameResult getGameResult = new GetGameResult(gameData);
-            return getGameResult;
-        }
-        catch(DataAccessException e){
-            throw new DataAccessException("Sorry, the specified game could not be retreived");
         }
     }
 }
