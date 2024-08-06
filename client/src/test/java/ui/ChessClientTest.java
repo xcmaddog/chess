@@ -95,7 +95,6 @@ class ChessClientTest {
         chessClient.register(params);
 
         params = new String[]{"newGame"};
-        String gameID = chessClient.createGame(params);
 
         String expected = "GameID|WhiteUsername|BlackUsername|GameName\n" +
                 "     1|             |             | newGame";
