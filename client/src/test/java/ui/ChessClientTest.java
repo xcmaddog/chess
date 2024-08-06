@@ -60,9 +60,10 @@ class ChessClientTest {
     }
 
     @Test
-    void logoutPositive() {
+    void logoutPositive() throws Exception {
         String[] params = {"NewUser", "newUserPassword", "nu@mail.com"};
-        assertDoesNotThrow(()-> chessClient.register(params));
+        chessClient.register(params);
+        chessClient.logout();
         assertFalse(chessClient.isSignedIn());
     }
 
@@ -96,8 +97,10 @@ class ChessClientTest {
         params = new String[]{"newGame"};
         String gameID = chessClient.createGame(params);
 
-        String expected = String.format("     %s|             |             | newGame", gameID);
-        assertEquals(expected, chessClient.listGames());
+        String expected = "GameID|WhiteUsername|BlackUsername|GameName\n" +
+                "     1|             |             | newGame";
+        String actual = chessClient.listGames();
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -117,10 +120,12 @@ class ChessClientTest {
         params = new String[]{"thisGame"};
         String secondID = chessClient.createGame(params);
 
-        String expected = String.format("     %s|             |             | newGame\n" +
-                "     %s|             |             | thisGame", firstID,secondID);
+        String expected = "GameID|WhiteUsername|BlackUsername|GameName\n" +
+                "     5|             |             |thisGame\n" +
+                "     4|             |             | newGame";
+        String actual = chessClient.listGames();
 
-        assertEquals(expected, chessClient.listGames());
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -140,7 +145,9 @@ class ChessClientTest {
         String[] finalParams = params;
         assertDoesNotThrow(()-> chessClient.joinGame(finalParams));
 
-        String expected = String.format("     %s|             |      NewUser| newGame", gameID);
+        String expected = "GameID|WhiteUsername|BlackUsername|GameName\n" +
+                "     2|             |      NewUser| newGame";
+        String actual = chessClient.listGames();
         assertEquals(expected, chessClient.listGames());
     }
 

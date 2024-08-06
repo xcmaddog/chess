@@ -1,9 +1,7 @@
 package ui;
 
 import dataaccess.DataAccessException;
-import request.LoginRequest;
-import request.LogoutRequest;
-import request.RegisterRequest;
+import request.*;
 import serverfacade.ServerFacade;
 
 import java.util.Arrays;
@@ -34,6 +32,10 @@ public class ChessClient {
                 case "login" -> login(params);
                 case "logout" -> logout();
                 case "register" -> register(params);
+                case "create" -> createGame(params);
+                case "list" -> listGames();
+                case "join" -> joinGame();
+                case "observe" -> observeGame();
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -107,12 +109,28 @@ public class ChessClient {
         throw new Exception("Expected register info as <username> <password> <email>");
     }
 
-    public String createGame(String... params){
-        return null;
+    public String createGame(String... params) throws Exception {
+        if (!signedIn){
+            throw new Exception("You need to be signed in to create a game");
+        }
+        if(params.length == 1){
+            String gameName = params[0];
+            CreateGameRequest createGameRequest = new CreateGameRequest(gameName);
+            String gameID = server.createGame(createGameRequest, authToken);
+            //return String.format("You created a new game: %s \n" +
+            //        "Its game ID is: %s", gameName,gameID);
+            return gameID;
+        }
+        throw new Exception("Expected one game name (no spaces)");
     }
 
-    public String listGames(){
-        return null;
+    public String listGames() throws Exception {
+        if (!signedIn){
+            throw new Exception("You need to be signed in to list the games");
+        }
+        ListGamesRequest listGamesRequest = new ListGamesRequest(authToken);
+        String listedGames = server.listGames(listGamesRequest);
+        return listedGames;
     }
 
     public String joinGame(String... params){
@@ -140,7 +158,8 @@ public class ChessClient {
     }
 
     public boolean isSignedIn(){
-        return signedIn;
+        boolean result = signedIn;
+        return result;
     }
 
     private final String preloginHelp = "register <USERNAME> <PASSWORD> <EMAIL> - to create and account \n" +

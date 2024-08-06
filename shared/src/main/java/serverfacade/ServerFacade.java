@@ -2,9 +2,10 @@ package serverfacade;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccessException; //I may want to move the data access exception to shared
-import request.LoginRequest;
-import request.LogoutRequest;
-import request.RegisterRequest;
+import model.GameInfo;
+import request.*;
+import result.CreateGameResult;
+import result.ListGamesResult;
 import result.LoginResult;
 import result.RegisterResult;
 
@@ -45,6 +46,30 @@ public class ServerFacade {
         RegisterResult registerResult = this.makeRequest(method, path, registerRequest, RegisterResult.class, null);
         String authToken = registerResult.authToken();
         return authToken;
+    }
+
+    public String createGame (CreateGameRequest createGameRequest, String authToken) throws DataAccessException {
+        String method = "POST";
+        String path = "/game";
+        CreateGameResult createGameResult = this.makeRequest(method, path, createGameRequest, CreateGameResult.class,
+                authToken);
+        String gameID = String.valueOf(createGameResult.gameID());
+        return gameID;
+    }
+
+    public String listGames(ListGamesRequest listGamesRequest) throws DataAccessException {
+        String method = "GET";
+        String path = "/game";
+        ListGamesResult listGamesResult = this.makeRequest(method, path, null, ListGamesResult.class,
+                listGamesRequest.authToken());
+        StringBuilder listedGames = new StringBuilder("GameID|WhiteUsername|BlackUsername|GameName\n");
+        for(GameInfo game : listGamesResult.getAllGameInfo()){
+            listedGames.append(gameInfoToString(game));
+            listedGames.append("\n");
+        }
+        listedGames.deleteCharAt(listedGames.length()-1);
+        //listedGames.deleteCharAt(listedGames.length()-1);
+        return listedGames.toString();
     }
 
     public void clear() throws DataAccessException {
@@ -110,6 +135,47 @@ public class ServerFacade {
             }
         }
         return response;
+    }
+
+    private String gameInfoToString(GameInfo gameInfo){
+        String gameID = String.valueOf(gameInfo.getGameID());
+        String whiteUsername = gameInfo.getWhiteUsername();
+        String blackUsername = gameInfo.getBlackUsername();
+        String gameName = gameInfo.getGameName();
+        StringBuilder resultBuilder = new StringBuilder();
+
+        if(gameID.length() > 6){
+            resultBuilder.append(gameID, 0, 3).append("...");
+        }else{
+            resultBuilder.append(" ".repeat((6 - gameID.length())));
+            resultBuilder.append(gameID);
+        }
+        resultBuilder.append("|");
+        if(whiteUsername==null){
+            resultBuilder.append("             ");
+        }else if(whiteUsername.length() >= 13){
+            resultBuilder.append(gameID, 0, 10).append("...");
+        }else{
+            resultBuilder.append(" ".repeat((13 - whiteUsername.length())));
+            resultBuilder.append(gameID);
+        }
+        resultBuilder.append("|");
+        if(blackUsername == null){
+            resultBuilder.append("             ");
+        } else if(blackUsername.length() >= 13){
+            resultBuilder.append(gameID, 0, 10).append("...");
+        }else{
+            resultBuilder.append(" ".repeat((13 - blackUsername.length())));
+            resultBuilder.append(gameID);
+        }
+        resultBuilder.append("|");
+        if(gameName.length() > 8){
+            resultBuilder.append(gameName, 0, 5).append("...");
+        }else{
+            resultBuilder.append(" ".repeat((8 - gameName.length())));
+            resultBuilder.append(gameName);
+        }
+        return resultBuilder.toString();
     }
 
     private boolean isSuccessful(int status){
