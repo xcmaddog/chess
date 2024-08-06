@@ -29,15 +29,23 @@ public class ChessClient {
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
-                case "login" -> login(params);
-                case "logout" -> logout();
-                case "register" -> register(params);
-                case "create" -> createGame(params);
-                case "list" -> listGames();
-                case "join" -> joinGame();
-                case "observe" -> observeGame();
-                case "quit" -> "quit";
-                default -> help();
+                case "login" : { yield login(params);}
+                case "logout" : { yield logout();}
+                case "register" : { yield register(params);}
+                case "create" : { yield createGame(params);}
+                case "list" : { yield listGames();}
+                case "join" : { yield joinGame();}
+                case "observe": { yield observeGame();}
+                case "quit" : {
+                    if(signedIn){
+                        String s = logout() + "\nquit";
+                        yield s;
+                    }else{
+                        String s = "quit";
+                        yield s;
+                    }
+                }
+                default : { yield help();}
             };
         }catch(DataAccessException e){
             String errorMsg = e.getMessage();
@@ -116,10 +124,10 @@ public class ChessClient {
         if(params.length == 1){
             String gameName = params[0];
             CreateGameRequest createGameRequest = new CreateGameRequest(gameName);
-            String gameID = server.createGame(createGameRequest, authToken);
+            String result = server.createGame(createGameRequest, authToken);
             //return String.format("You created a new game: %s \n" +
             //        "Its game ID is: %s", gameName,gameID);
-            return gameID;
+            return result;
         }
         throw new Exception("Expected one game name (no spaces)");
     }

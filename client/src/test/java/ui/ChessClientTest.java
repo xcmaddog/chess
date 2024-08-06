@@ -2,16 +2,14 @@ package ui;
 
 import dataaccess.DataAccessException;
 import model.UserData;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import server.Server;
 import serverfacade.ServerFacade;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ChessClientTest {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class ChessClientTest {
 
     private static ServerFacade serverFacade;
     private static Server server;
@@ -90,11 +88,13 @@ class ChessClientTest {
     }
 
     @Test
+    @Order(1)
     void createGamePositive() throws Exception {
         String[] params = {"NewUser", "newUserPassword", "nu@mail.com"};
         chessClient.register(params);
 
         params = new String[]{"newGame"};
+        chessClient.createGame(params);
 
         String expected = "GameID|WhiteUsername|BlackUsername|GameName\n" +
                 "     1|             |             | newGame";
@@ -109,6 +109,7 @@ class ChessClientTest {
     }
 
     @Test
+    @Order(3)
     void listGamesPositive() throws Exception {
         String[] params = {"NewUser", "newUserPassword", "nu@mail.com"};
         chessClient.register(params);
@@ -120,8 +121,8 @@ class ChessClientTest {
         String secondID = chessClient.createGame(params);
 
         String expected = "GameID|WhiteUsername|BlackUsername|GameName\n" +
-                "     5|             |             |thisGame\n" +
-                "     4|             |             | newGame";
+                "     4|             |             |thisGame\n" +
+                "     3|             |             | newGame";
         String actual = chessClient.listGames();
 
         assertEquals(expected, actual);
@@ -133,6 +134,7 @@ class ChessClientTest {
     }
 
     @Test
+    @Order(2)
     void joinGamePositive() throws Exception {
         String[] params = {"NewUser", "newUserPassword", "nu@mail.com"};
         chessClient.register(params);
