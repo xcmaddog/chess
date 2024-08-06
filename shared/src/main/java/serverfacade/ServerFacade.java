@@ -56,6 +56,7 @@ public class ServerFacade {
         String gameID = String.valueOf(createGameResult.gameID());
         String result = String.format("Successfully created game: %s\n Its game ID is: %s",
                 createGameRequest.gameName(), gameID);
+        return result;
     }
 
     public String listGames(ListGamesRequest listGamesRequest) throws DataAccessException {
