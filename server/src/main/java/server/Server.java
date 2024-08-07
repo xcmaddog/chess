@@ -138,13 +138,13 @@ public class Server {
             String result = userHandler.handleLogout(theAuthToken);
             res.status(200);
             return result;
-        }catch(DataAccessException dataAccessException){
-            if (Objects.equals(dataAccessException.getMessage(), "The authToken was not recognized")){
+        }catch(DataAccessException e){
+            if (Objects.equals(e.getMessage(), "The authToken was not recognized")){
                 res.status(401);
                 return "{ \"message\": \"Error: unauthorized\" }";
             }else{
                 res.status(500);
-                return "{ \"message\": \"Error: " + dataAccessException.getMessage() + "\" }";
+                return "{ \"message\": \"Error: " + e.getMessage() + "\" }";
             }
         }
     }

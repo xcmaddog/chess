@@ -14,7 +14,7 @@ public class ChessClientTest {
     private static Server server;
     private static Repl repl;
     private ChessClient chessClient;
-    private static String URL;
+    private static String url;
 
     @AfterAll
     static void stopServer() {
@@ -26,15 +26,15 @@ public class ChessClientTest {
         server = new Server();
         var port = server.run(0);
         System.out.println("Started test HTTP server on " + port);
-        URL = String.format("http://localhost:%d",port);
-        repl = new Repl(URL);
-        serverFacade = new ServerFacade(URL);
+        url = String.format("http://localhost:%d",port);
+        repl = new Repl(url);
+        serverFacade = new ServerFacade(url);
     }
 
     @BeforeEach
     public void setup() throws DataAccessException {
         serverFacade.clear();
-        chessClient = new ChessClient(URL, repl);
+        chessClient = new ChessClient(url, repl);
     }
 
 
