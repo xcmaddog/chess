@@ -17,6 +17,8 @@ import java.util.HashMap;
 
 public class ChessClient {
 
+
+    //randon commented line
     private String username = null;
     private String authToken = null;
     private final ServerFacade server;
