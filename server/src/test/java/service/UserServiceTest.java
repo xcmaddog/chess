@@ -5,6 +5,7 @@ import dataaccess.MemoryGameDAO;
 import dataaccess.MemoryUserDAO;
 import model.GameData;
 import model.UserData;
+import mydataaccess.DataAccessException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import request.LoginRequest;
@@ -34,37 +35,37 @@ class UserServiceTest {
     }
 
     @Test
-    void registerPositive() throws dataaccess.DataAccessException {
+    void registerPositive() throws DataAccessException {
         RegisterRequest registerRequest = new RegisterRequest("JillSmith", "ConfidentPassword",
                 "jill2002@yahoo.com");
         assertTrue(userService.register(registerRequest) instanceof RegisterResult);// a new user was made
     }
 
     @Test
-    void registerNegative() throws dataaccess.DataAccessException {
+    void registerNegative() throws DataAccessException {
         RegisterRequest registerRequest = new RegisterRequest("JoeBob","IcannotThink",
                 "joebob@gmail.com");
         RegisterRequest finalRegisterRequest = registerRequest;
         //a new user was not made
-        assertThrows(dataaccess.DataAccessException.class, () -> userService.register(finalRegisterRequest));
+        assertThrows(DataAccessException.class, () -> userService.register(finalRegisterRequest));
     }
 
     @Test
-    void loginPositive() throws dataaccess.DataAccessException {
+    void loginPositive() throws DataAccessException {
         LoginRequest loginRequest = new LoginRequest("JoeBob", "IcannotThink");
         assertTrue(userService.login(loginRequest) instanceof LoginResult); // successful login
 
     }
     @Test
-    void loginNegative() throws dataaccess.DataAccessException {
+    void loginNegative() throws DataAccessException {
         LoginRequest loginRequest = new LoginRequest("JoeBob", "IcannotThink");
         loginRequest = new LoginRequest("JoeBob", "IThinkThereforeIAm");
         LoginRequest finalLoginRequest = loginRequest;
-        assertThrows(dataaccess.DataAccessException.class, ()-> userService.login(finalLoginRequest));//failed to log in
+        assertThrows(DataAccessException.class, ()-> userService.login(finalLoginRequest));//failed to log in
     }
 
     @Test
-    void logoutPositive() throws dataaccess.DataAccessException {
+    void logoutPositive() throws DataAccessException {
         LoginRequest loginRequest = new LoginRequest("JoeBob", "IcannotThink");
         LoginResult loginResult = userService.login(loginRequest);
 
@@ -73,12 +74,12 @@ class UserServiceTest {
         assertEquals(expected, userService.logout(logoutRequest)); //successful logout
     }
     @Test
-    void logoutNegative() throws dataaccess.DataAccessException {
+    void logoutNegative() throws DataAccessException {
         LoginRequest loginRequest = new LoginRequest("JoeBob", "IcannotThink");
         LoginResult loginResult = userService.login(loginRequest);
 
         LogoutRequest logoutRequest = new LogoutRequest("ILikePie");
         LogoutRequest finalLogoutRequest = logoutRequest;
-        assertThrows(dataaccess.DataAccessException.class, ()-> userService.logout(finalLogoutRequest));//fail to logout
+        assertThrows(DataAccessException.class, ()-> userService.logout(finalLogoutRequest));//fail to logout
     }
 }

@@ -2,6 +2,7 @@ package dataaccess;
 
 import model.GameData;
 import model.GameInfo;
+import mydataaccess.DataAccessException;
 
 import java.util.Collection;
 

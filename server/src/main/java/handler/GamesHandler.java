@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
-import dataaccess.DataAccessException;
+import mydataaccess.DataAccessException;
 import request.CreateGameRequest;
 import request.GetGameRequest;
 import request.JoinGameRequest;
@@ -25,17 +25,17 @@ public class GamesHandler {
         this.gamesService = new GamesService(userDAO,gameDAO,authDAO);
     }
 
-    public String handleCreateGame(String authToken, String jsonFromServer) throws dataaccess.DataAccessException {
+    public String handleCreateGame(String authToken, String jsonFromServer) throws DataAccessException {
         CreateGameRequest createGameRequest = serializer.fromJson(jsonFromServer,CreateGameRequest.class);
         if (createGameRequest.gameName() == null){
-            throw new dataaccess.DataAccessException("Invalid request");
+            throw new DataAccessException("Invalid request");
         }
         CreateGameResult createGameResult = gamesService.createGame(authToken, createGameRequest);
         String jsonToReturn = serializer.toJson(createGameResult);
         return jsonToReturn;
     }
 
-    public String handleJoinGame(String authToken, String jsonFromServer) throws dataaccess.DataAccessException {
+    public String handleJoinGame(String authToken, String jsonFromServer) throws DataAccessException {
         JoinGameRequest joinGameRequest = serializer.fromJson(jsonFromServer,JoinGameRequest.class);
         if (joinGameRequest.playerColor() == null || joinGameRequest.gameID() < 1){
             throw new DataAccessException("Invalid request");
@@ -45,7 +45,7 @@ public class GamesHandler {
         return jsonToReturn;
     }
 
-    public String handleListGames(String authToken) throws dataaccess.DataAccessException{
+    public String handleListGames(String authToken) throws DataAccessException {
         ListGamesRequest listGamesRequest = new ListGamesRequest(authToken);
         ListGamesResult listGamesResult = gamesService.getGames(listGamesRequest);
         String jsonToReturn = serializer.toJson(listGamesResult);

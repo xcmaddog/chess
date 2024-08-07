@@ -7,14 +7,13 @@ import chess.PositionPieceMapAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import dataaccess.DataAccessException;
+import mydataaccess.DataAccessException;
 import model.GameData;
 import request.*;
 import serverfacade.ServerFacade;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.ResourceBundle;
 
 public class ChessClient {
 

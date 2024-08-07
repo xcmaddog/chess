@@ -9,15 +9,13 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import model.GameData;
 import model.GameInfo;
-import model.UserData;
+import mydataaccess.DataAccessException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.sql.DriverManager;
 
 public class SQLGameDAO extends SQLAuthDAO implements GameDAO{
 

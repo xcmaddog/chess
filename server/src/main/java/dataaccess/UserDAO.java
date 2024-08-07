@@ -1,8 +1,7 @@
 package dataaccess;
 
 import model.UserData;
-
-import java.sql.SQLException;
+import mydataaccess.DataAccessException;
 
 public interface UserDAO {
     void createUser(UserData userData) throws DataAccessException;

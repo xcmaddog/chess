@@ -1,7 +1,6 @@
 package ui;
 
-import dataaccess.DataAccessException;
-import model.UserData;
+import mydataaccess.DataAccessException;
 import org.junit.jupiter.api.*;
 import server.Server;
 import serverfacade.ServerFacade;

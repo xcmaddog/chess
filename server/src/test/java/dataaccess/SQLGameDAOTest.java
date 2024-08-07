@@ -7,7 +7,7 @@ import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import model.GameData;
 import model.GameInfo;
-import model.UserData;
+import mydataaccess.DataAccessException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -3,6 +3,7 @@ package service;
 import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
+import mydataaccess.DataAccessException;
 import org.mindrot.jbcrypt.BCrypt;
 import request.LoginRequest;
 import request.LogoutRequest;
@@ -21,7 +22,7 @@ public class UserService extends Service{
         super(userDAO, gameDAO, authDAO);
     }
 
-    public RegisterResult register(RegisterRequest registerRequest) throws dataaccess.DataAccessException {
+    public RegisterResult register(RegisterRequest registerRequest) throws DataAccessException {
         String username = registerRequest.username();
         if (super.userDAO.getUser(username) == null){
             String password = registerRequest.password();
@@ -34,11 +35,11 @@ public class UserService extends Service{
             RegisterResult registerResult = new RegisterResult(username, authToken);
             return registerResult;
         } else {
-            throw new dataaccess.DataAccessException("A user with that username already exists");
+            throw new DataAccessException("A user with that username already exists");
         }
     }
 
-    public LoginResult login(LoginRequest loginRequest) throws dataaccess.DataAccessException{
+    public LoginResult login(LoginRequest loginRequest) throws DataAccessException {
         String username = loginRequest.username();
         UserData userData = userDAO.getUser(username);
         if (userData != null){
@@ -49,14 +50,14 @@ public class UserService extends Service{
                 LoginResult loginResult = new LoginResult(username,authToken);
                 return loginResult;
             }else {
-                throw new dataaccess.DataAccessException("The password provided was incorrect");
+                throw new DataAccessException("The password provided was incorrect");
             }
         } else {
-            throw new dataaccess.DataAccessException("The username provided is invalid");
+            throw new DataAccessException("The username provided is invalid");
         }
     }
 
-    public LogoutResult logout(LogoutRequest logoutRequest) throws dataaccess.DataAccessException {
+    public LogoutResult logout(LogoutRequest logoutRequest) throws DataAccessException {
         String authToken = logoutRequest.authToken();
         if (isAuthorized(authToken)){
             //log them out
@@ -64,7 +65,7 @@ public class UserService extends Service{
             LogoutResult logoutResult = new LogoutResult();
             return logoutResult;
         } else {
-            throw new dataaccess.DataAccessException("The authToken was not recognized");
+            throw new DataAccessException("The authToken was not recognized");
         }
     }
 }

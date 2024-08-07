@@ -6,7 +6,7 @@ import chess.PositionPieceMapAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import dataaccess.DataAccessException; //I may want to move the data access exception to shared
+import mydataaccess.DataAccessException; //I may want to move the data access exception to shared
 import model.GameInfo;
 import request.*;
 import result.*;

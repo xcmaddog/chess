@@ -1,7 +1,8 @@
 package dataaccess;
 
-import com.google.gson.Gson;
 import model.UserData;
+import mydataaccess.DataAccessException;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
+import mydataaccess.DataAccessException;
 import request.LoginRequest;
 import request.LogoutRequest;
 import request.RegisterRequest;
@@ -22,20 +23,20 @@ public class UserHandler {
         this.userService = new UserService(userDAO,gameDAO,authDAO);
     }
 
-    public String handleRegistration (String jsonFromServer) throws dataaccess.DataAccessException {
+    public String handleRegistration (String jsonFromServer) throws DataAccessException {
         //make the Gson object
 
         //turn the JSON fom the server into a RegisterRequest object
         RegisterRequest registerRequest =  serializer.fromJson(jsonFromServer, RegisterRequest.class);
 
         if(registerRequest.username() == null){
-            throw new dataaccess.DataAccessException("username not provided");
+            throw new DataAccessException("username not provided");
         }
         if(registerRequest.password() == null){
-            throw new dataaccess.DataAccessException("password not provided");
+            throw new DataAccessException("password not provided");
         }
         if(registerRequest.email() == null){
-            throw new dataaccess.DataAccessException("email not provided");
+            throw new DataAccessException("email not provided");
         }
         //get a RegisterResult object from the UserService
         RegisterResult registerResult = userService.register(registerRequest);
@@ -44,14 +45,14 @@ public class UserHandler {
         return jsonToReturn;
     }
 
-    public String handleLogin(String jsonFromServer) throws dataaccess.DataAccessException {
+    public String handleLogin(String jsonFromServer) throws DataAccessException {
         LoginRequest loginRequest = serializer.fromJson(jsonFromServer, LoginRequest.class);
         LoginResult loginResult = userService.login(loginRequest);
         String jsonToReturn = serializer.toJson(loginResult);
         return jsonToReturn;
     }
 
-    public String handleLogout (String authToken) throws dataaccess.DataAccessException {
+    public String handleLogout (String authToken) throws DataAccessException {
         LogoutRequest logoutRequest = new LogoutRequest(authToken);
         LogoutResult logoutResult = userService.logout(logoutRequest);
         String jsonToReturn = serializer.toJson(logoutResult);

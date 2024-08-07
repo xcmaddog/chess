@@ -4,6 +4,7 @@ import dataaccess.*;
 import handler.ClearHandler;
 import handler.GamesHandler;
 import handler.UserHandler;
+import mydataaccess.DataAccessException;
 import spark.*;
 
 import java.util.Objects;
