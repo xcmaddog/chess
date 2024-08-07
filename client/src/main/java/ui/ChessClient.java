@@ -168,6 +168,14 @@ public class ChessClient {
             }
             JoinGameRequest joinGameRequest = new JoinGameRequest(teamColor, gameID);
             String result = server.joinGame(joinGameRequest, authToken);
+
+            //currently this only displays a generic game
+            if (teamColor == ChessGame.TeamColor.BLACK){
+                boardDisplay.displayBlackBoard(new ChessGame());
+            }else{
+                boardDisplay.displayWhiteBoard(new ChessGame());
+            }
+
             return result;
         }
         throw new Exception("Expected join info as <gameID> [BLACK|WHITE]");
