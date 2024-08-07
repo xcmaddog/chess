@@ -1,6 +1,11 @@
 package serverfacade;
 
+import chess.ChessPiece;
+import chess.ChessPosition;
+import chess.PositionPieceMapAdapter;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import dataaccess.DataAccessException; //I may want to move the data access exception to shared
 import model.GameInfo;
 import request.*;
@@ -13,6 +18,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.util.HashMap;
 
 public class ServerFacade {
 
@@ -81,6 +87,14 @@ public class ServerFacade {
         return result;
     }
 
+    public String observeGame(GetGameRequest getGameRequest, String authToken) throws DataAccessException{
+        String method = "GET";
+        String path = String.format("/observe?gameId=%s", getGameRequest.gameID());
+        GetGameResult getGameResult = this.makeRequest(method, path, null, GetGameResult.class, authToken);
+        String result = new Gson().toJson(getGameResult.gameData());
+        return result;
+    }
+
     public void clear() throws DataAccessException {
         String method = "DELETE";
         String path = "/db";
@@ -139,7 +153,9 @@ public class ServerFacade {
             try(InputStream respBody = http.getInputStream()){
                 InputStreamReader reader = new InputStreamReader(respBody);
                 if (responseClass != null){
-                    response = new Gson().fromJson(reader, responseClass);
+                    Gson gson = new GsonBuilder().registerTypeAdapter(new TypeToken<HashMap<ChessPosition,
+                                    ChessPiece>>(){}.getType(), new PositionPieceMapAdapter()).create();
+                    response = gson.fromJson(reader, responseClass);
                 }
             }
         }
@@ -166,7 +182,7 @@ public class ServerFacade {
             resultBuilder.append(gameID, 0, 10).append("...");
         }else{
             resultBuilder.append(" ".repeat((13 - whiteUsername.length())));
-            resultBuilder.append(gameID);
+            resultBuilder.append(whiteUsername);
         }
         resultBuilder.append("|");
         if(blackUsername == null){

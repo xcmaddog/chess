@@ -1,11 +1,19 @@
 package ui;
 
 import chess.ChessGame;
+import chess.ChessPiece;
+import chess.ChessPosition;
+import chess.PositionPieceMapAdapter;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import dataaccess.DataAccessException;
+import model.GameData;
 import request.*;
 import serverfacade.ServerFacade;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 
 public class ChessClient {
@@ -168,7 +176,22 @@ public class ChessClient {
         if (!signedIn){
             throw new Exception("You need to be signed in to list the games");
         }
-        return null;
+        if (params.length == 1){
+            String theID = params[0];
+            int gameID = Integer.parseInt(theID);
+            GetGameRequest getGameRequest = new GetGameRequest(gameID);
+            String jsonGameData = server.observeGame(getGameRequest, authToken);
+            Gson gson = new GsonBuilder().registerTypeAdapter(new TypeToken<HashMap<ChessPosition,
+                    ChessPiece>>(){}.getType(), new PositionPieceMapAdapter()).create();
+            GameData gameData = gson.fromJson(jsonGameData, GameData.class);
+            boardDisplay.displayBlackBoard(gameData.getGame());
+            boardDisplay.displayWhiteBoard(gameData.getGame());
+            return String.format("You are now observing %s.\n" +
+                    "%s is playing as white and\n" +
+                    "%s is playing as black",
+                    gameData.getGameName(), gameData.getWhiteUsername(), gameData.getBlackUsername());
+        }
+        throw new Exception("Expected observe info as <gameID>");
     }
 
     public String help(){

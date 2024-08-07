@@ -169,6 +169,7 @@ public class ChessClientTest {
     }
 
     @Test
+    @Order(5)
     void observeGamePositive() throws Exception {
         String[] params = {"NewUser", "newUserPassword", "nu@mail.com"};
         chessClient.register(params);
@@ -176,11 +177,14 @@ public class ChessClientTest {
         params = new String[]{"newGame"};
         String gameID = chessClient.createGame(params);
 
+        params = new String[]{"5", "BLACK"};
+        chessClient.joinGame(params);
+
         String expected = String.format("You are now observing newGame.\n" +
-                " is playing as white and\n" +
+                "null is playing as white and\n" +
                 "NewUser is playing as black");
 
-        params = new String[]{gameID};
+        params = new String[]{"5"};
         assertEquals(expected, chessClient.observeGame(params));
     }
 

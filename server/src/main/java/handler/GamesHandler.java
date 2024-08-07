@@ -52,8 +52,8 @@ public class GamesHandler {
         return jsonToReturn;
     }
 
-    public String getGame(String authToken, String jsonFromServer) throws DataAccessException {
-        GetGameRequest getGameRequest = serializer.fromJson(jsonFromServer, GetGameRequest.class);
+    public String getGame(String authToken, String paramsFromHeader) throws DataAccessException {
+        GetGameRequest getGameRequest = new GetGameRequest(Integer.parseInt(paramsFromHeader));
         GetGameResult getGameResult = gamesService.getGame(authToken, getGameRequest);
         String jsonToReturn = serializer.toJson(getGameResult);
         return jsonToReturn;

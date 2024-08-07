@@ -69,7 +69,7 @@ public class Server {
     private String getGame(Request req, Response res){
         try{
             String theAuthToken = req.headers("authorization");
-            String result = gameHandler.getGame(theAuthToken, req.body());
+            String result = gameHandler.getGame(theAuthToken, req.queryParams("gameId"));
             res.status(200);
             return result;
         }
