@@ -56,7 +56,7 @@ public class Repl implements BoardDisplay{
         }
         System.out.println(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_PURPLE + manySmalls + "1"+smol+"2" +smol+ "3"
                 +smol+ "4" +smol+ "5" +smol+ "6" +smol+ "7" +smol+ "8");
-        //print each middle row in a loop
+        System.out.println(RESET);
     }
 
     @Override
@@ -75,8 +75,7 @@ public class Repl implements BoardDisplay{
             System.out.println(row);
         }
         System.out.println(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_PURPLE + manySmalls + "1"+smol+"2" +smol+ "3" +smol+ "4" +smol+ "5" +smol+ "6" +smol+ "7" +smol+ "8");
-        //print each middle row in a loop
-        //print the bottom row (identical to top)
+        System.out.println(RESET);
     }
 
     private void printPrompt() {
