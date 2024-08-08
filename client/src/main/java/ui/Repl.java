@@ -46,12 +46,12 @@ public class Repl implements BoardDisplay{
         for (int i = 1; i<9; i++){ //i is for row
             StringBuilder row = new StringBuilder();
             row.append(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_PURPLE);
-            row.append(String.format(someSmalls+ "%s"+someSmalls,i));
+            row.append(String.format(someSmalls+ "%s"+someSmalls,letters[i-1]));
             for(int j = 8; j>0; j--){ //j is for column
                 row.append(squareToString(new ChessPosition(i,j), chessGame.getBoard()));
             }
             row.append(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_PURPLE);
-            row.append(String.format(someSmalls+ "%s"+someSmalls,i));
+            row.append(String.format(someSmalls+ "%s"+someSmalls,letters[i-1]));
             System.out.println(row);
         }
         System.out.println(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_PURPLE + manySmalls + "1"+smol+"2" +smol+ "3"
@@ -66,12 +66,12 @@ public class Repl implements BoardDisplay{
         for (int i = 8; i>0; i--){ //i is for row
             StringBuilder row = new StringBuilder();
             row.append(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_PURPLE);
-            row.append(String.format(someSmalls+ "%s"+someSmalls,i));
+            row.append(String.format(someSmalls+ "%s"+someSmalls,letters[i-1]));
             for(int j = 1; j<9; j++){ //j is for column
                 row.append(squareToString(new ChessPosition(i,j), chessGame.getBoard()));
             }
             row.append(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_PURPLE);
-            row.append(String.format(someSmalls+ "%s"+someSmalls,i));
+            row.append(String.format(someSmalls+ "%s"+someSmalls,letters[i-1]));
             System.out.println(row);
         }
         System.out.println(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_PURPLE + manySmalls + "1"+smol+"2" +smol+ "3" +smol+
@@ -126,7 +126,9 @@ public class Repl implements BoardDisplay{
     }
 
     private final String manySmalls = SMALL + SMALL+ SMALL + SMALL +SMALL + SMALL + SMALL + SMALL + SMALL + SMALL+
-            SMALL + SMALL +SMALL + SMALL + SMALL + SMALL+ SMALL +SMALL + SMALL;
+            SMALL + SMALL +SMALL + SMALL + SMALL + SMALL+ SMALL +SMALL + SMALL+ SMALL +SMALL + SMALL;
     private final String someSmalls = SMALL+SMALL+SMALL+SMALL+SMALL;
-    private final String smol = SMALL + SMALL+ SMALL + SMALL +SMALL+SMALL + SMALL + SMALL+SMALL + SMALL + SMALL ;
+    private final String smol = SMALL + SMALL+ SMALL + SMALL + SMALL+ SMALL + SMALL +SMALL+SMALL + SMALL + SMALL+SMALL
+            + SMALL;
+    private final String[] letters = {"a", "b", "c", "d", "e", "f", "g", "h"};
 }
