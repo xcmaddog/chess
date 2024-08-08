@@ -63,7 +63,7 @@ public class EscapeSequences {
     public static final String EMPTY = " \u2003 ";
     public static final String SMALL = "\u200a";
 
-    public static final String RESET = UNICODE_ESCAPE + SET_TEXT_COLOR_BLACK;
+    public static final String RESET = UNICODE_ESCAPE + RESET_TEXT_COLOR + RESET_BG_COLOR;
 
     public static String moveCursorToLocation(int x, int y) { return UNICODE_ESCAPE + "[" + y + ";" + x + "H"; }
 }

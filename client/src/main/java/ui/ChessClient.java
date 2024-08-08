@@ -15,6 +15,8 @@ import serverfacade.ServerFacade;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import static ui.EscapeSequences.*;
+
 public class ChessClient {
 
     private String username = null;
@@ -220,7 +222,7 @@ public class ChessClient {
         return result;
     }
 
-    private final String preloginHelp = "register <USERNAME> <PASSWORD> <EMAIL> - to create and account \n" +
+    private final String preloginHelp = SET_TEXT_COLOR_BLUE+"register <USERNAME> <PASSWORD> <EMAIL> - to create and account \n" +
             "login <USERNAME> <PASSWORD> - to play chess \n" +
             "quit - to quit playing chess \n" +
             "help - to display the possible commands";

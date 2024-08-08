@@ -80,7 +80,7 @@ public class Repl implements BoardDisplay{
     }
 
     private void printPrompt() {
-        System.out.print("\n" + RESET + ">>> " + SET_TEXT_COLOR_GREEN);
+        System.out.print("\n" + RESET + ">>> " + SET_TEXT_COLOR_PURPLE);
     }
 
     String squareToString (ChessPosition chessPosition, ChessBoard chessBoard){
