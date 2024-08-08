@@ -107,7 +107,9 @@ class GamesServiceTest {
     void joinGamePositive() throws InvalidMoveException, DataAccessException {
         String anAuthToken = "thisIsTheFirstAuthToken";
         JoinGameRequest joinGameRequest = new JoinGameRequest(ChessGame.TeamColor.WHITE, 1234);
-        JoinGameResult expected = new JoinGameResult();
+        GameData expectedGameData = new GameData(1234,oneGame.getGameName(),oneGame.getGame(),
+                "firstUser",null);
+        JoinGameResult expected = new JoinGameResult(expectedGameData);
         assertEquals(expected, gameService.joinGame(anAuthToken, joinGameRequest)); //successful add to a game
     }
     @Test

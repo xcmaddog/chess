@@ -64,7 +64,7 @@ public class GamesService extends Service{
             String username = authDAO.getAuth(authToken).username();
             GameData newData = new GameData(gameData.getGameID(), gameData.getGameName(), gameData.getGame(), username, gameData.getBlackUsername());
             gameDAO.updateGame(newData);
-            JoinGameResult joinGameResult = new JoinGameResult();
+            JoinGameResult joinGameResult = new JoinGameResult(newData);
             return joinGameResult;
         } else {
             if (gameData.getBlackUsername() != null) {
@@ -73,7 +73,7 @@ public class GamesService extends Service{
             String username = authDAO.getAuth(authToken).username();
             GameData newData = new GameData(gameData.getGameID(), gameData.getGameName(), gameData.getGame(), gameData.getWhiteUsername(), username);
             gameDAO.updateGame(newData);
-            JoinGameResult joinGameResult = new JoinGameResult();
+            JoinGameResult joinGameResult = new JoinGameResult(newData);
             return joinGameResult;
         }
 

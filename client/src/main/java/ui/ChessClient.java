@@ -17,8 +17,6 @@ import java.util.HashMap;
 
 public class ChessClient {
 
-
-    //randon commented line
     private String username = null;
     private String authToken = null;
     private final ServerFacade server;
@@ -26,6 +24,8 @@ public class ChessClient {
     private final BoardDisplay boardDisplay;
     //private WebSocketFacade ws;
     private boolean signedIn = false;
+    private Gson gson = new GsonBuilder().registerTypeAdapter(new TypeToken<HashMap<ChessPosition,
+            ChessPiece>>(){}.getType(), new PositionPieceMapAdapter()).create();
 
     public ChessClient(String serverUrl, BoardDisplay boardDisplay){
         server = new ServerFacade(serverUrl);
@@ -135,8 +135,6 @@ public class ChessClient {
             String gameName = params[0];
             CreateGameRequest createGameRequest = new CreateGameRequest(gameName);
             String result = server.createGame(createGameRequest, authToken);
-            //return String.format("You created a new game: %s \n" +
-            //        "Its game ID is: %s", gameName,gameID);
             return result;
         }
         throw new Exception("Expected one game name (no spaces)");
@@ -167,15 +165,15 @@ public class ChessClient {
                 throw new Exception("Expected to join either \"WHITE\" or \"BLACK\" team");
             }
             JoinGameRequest joinGameRequest = new JoinGameRequest(teamColor, gameID);
-            String result = server.joinGame(joinGameRequest, authToken);
-
-            //currently this only displays a generic game
+            String json = server.joinGame(joinGameRequest, authToken);
+            GameData gameData = gson.fromJson(json, GameData.class);
             if (teamColor == ChessGame.TeamColor.BLACK){
-                boardDisplay.displayBlackBoard(new ChessGame());
+                boardDisplay.displayBlackBoard(gameData.getGame());
             }else{
-                boardDisplay.displayWhiteBoard(new ChessGame());
+                boardDisplay.displayWhiteBoard(gameData.getGame());
             }
-
+            String result = String.format("You joined game %s (%s) as the %s player",
+                    gameData.getGameName(),gameData.getGameID(),teamColor);
             return result;
         }
         throw new Exception("Expected join info as <gameID> [BLACK|WHITE]");
@@ -190,8 +188,6 @@ public class ChessClient {
             int gameID = Integer.parseInt(theID);
             GetGameRequest getGameRequest = new GetGameRequest(gameID);
             String jsonGameData = server.observeGame(getGameRequest, authToken);
-            Gson gson = new GsonBuilder().registerTypeAdapter(new TypeToken<HashMap<ChessPosition,
-                    ChessPiece>>(){}.getType(), new PositionPieceMapAdapter()).create();
             GameData gameData = gson.fromJson(jsonGameData, GameData.class);
             boardDisplay.displayBlackBoard(gameData.getGame());
             boardDisplay.displayWhiteBoard(gameData.getGame());

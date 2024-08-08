@@ -82,8 +82,9 @@ public class ServerFacade {
         String path = "/game";
         JoinGameResult joinGameResult = this.makeRequest(method, path, joinGameRequest,
                 JoinGameResult.class, authToken);
-        String result = String.format("You successfully joined game %s as the %s player",
-                joinGameRequest.gameID(),joinGameRequest.playerColor().toString());
+        //String result = String.format("You successfully joined game %s as the %s player",
+        //        joinGameRequest.gameID(),joinGameRequest.playerColor().toString());
+        String result = new Gson().toJson(joinGameResult.gameData());
         return result;
     }
 

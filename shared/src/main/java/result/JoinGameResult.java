@@ -1,10 +1,6 @@
 package result;
 
-public class JoinGameResult {
-    public JoinGameResult(){}
+import model.GameData;
 
-    @Override
-    public boolean equals(Object obj) {
-        return obj instanceof JoinGameResult;
-    }
+public record JoinGameResult(GameData gameData) {
 }
