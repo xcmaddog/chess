@@ -185,7 +185,6 @@ public class ChessClient {
             This chunk of code is to deal with the websocket
              */
             ws = new WebSocketFacade(serverUrl, boardDisplay);
-            //might need to put in some variables
             ws.joinGame(username, authToken, gameID);
 
             return result;

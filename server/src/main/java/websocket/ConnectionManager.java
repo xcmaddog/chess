@@ -1,5 +1,6 @@
 package websocket;
 
+import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
 import websocket.messages.ServerMessage;
 
@@ -9,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ConnectionManager {
     public final ConcurrentHashMap<String, Connection> connections = new ConcurrentHashMap<>();
+    private final Gson gson = new Gson();
 
     public void add(String username, Session session) {
         var connection = new Connection(username, session);
@@ -24,7 +26,9 @@ public class ConnectionManager {
         for (var c : connections.values()) {
             if (c.session.isOpen()) {
                 if (!c.playerName.equals(excludePlayerName)) {
-                    c.send(notification.toString());
+                    String json = gson.toJson(notification);
+                    //c.send(notification.toString()); ----this is the old code. I'm keeping it here in case it proves useful for the different classes
+                    c.send(json);
                 }
             } else {
                 removeList.add(c);

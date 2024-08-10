@@ -40,6 +40,11 @@ public class Repl implements BoardDisplay{
     }
 
     @Override
+    public void displayMessage(String message){
+        System.out.println(message);
+    }
+
+    @Override
     public void displayBlackBoard(ChessGame chessGame) {
         System.out.println(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_PURPLE + manySmalls +"1"+smol+"2" +smol+ "3" +smol+ "4"
                 +smol+ "5" +smol+ "6" +smol+ "7" +smol+ "8");//print the top row

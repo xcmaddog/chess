@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import mydataaccess.DataAccessException;
 import ui.BoardDisplay;
 import websocket.commands.UserGameCommand;
+import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
 import javax.websocket.*;
@@ -31,8 +32,13 @@ public class WebSocketFacade extends Endpoint {
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {
                 @Override
                 public void onMessage(String message) {
-                    ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
 
+                    //System.out.println("Message class: " + message.getClass().getName());
+                    //System.out.println("Raw message content: " + message);
+
+                    NotificationMessage serverMessage = new Gson().fromJson(message, NotificationMessage.class);
+
+                    boardDisplay.displayMessage(serverMessage.getMessage());
 
                     //right now it only displays a generic board from the white pov
                     boardDisplay.displayWhiteBoard(new ChessGame());
@@ -53,6 +59,7 @@ public class WebSocketFacade extends Endpoint {
         try{
             UserGameCommand userGameCommand =
                     new UserGameCommand(UserGameCommand.CommandType.CONNECT, username, authToken, GameId);
+            this.session.getBasicRemote().sendText(new Gson().toJson(userGameCommand));
         } catch(Exception e){ // maybe catch specific excecption type
             throw new DataAccessException(e.getMessage());
         }
