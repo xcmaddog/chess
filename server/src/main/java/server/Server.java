@@ -5,7 +5,11 @@ import handler.ClearHandler;
 import handler.GamesHandler;
 import handler.UserHandler;
 import mydataaccess.DataAccessException;
+import org.eclipse.jetty.websocket.server.WebSocketHandler;
 import spark.*;
+import org.eclipse.jetty.websocket.api.annotations.*;
+import org.eclipse.jetty.websocket.api.*;
+import websocket.ConnectionManager;
 
 import java.util.Objects;
 
@@ -16,6 +20,7 @@ public class Server {
     private final ClearHandler clearHandler;
     private final UserHandler userHandler;
     private final GamesHandler gameHandler;
+    private final websocket.WebSocketHandler webSocketHandler; // if things don't work look at this
 
     public Server() {
         UserDAO userDAO = new SQLUserDAO();
@@ -26,12 +31,16 @@ public class Server {
         this.clearHandler = new ClearHandler(userDAO, gameDAO, authDAO);
         this.userHandler = new UserHandler(userDAO, gameDAO, authDAO);
         this.gameHandler = new GamesHandler(userDAO, gameDAO, authDAO);
+
+        webSocketHandler = new websocket.WebSocketHandler();
     }
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
+
+        Spark.webSocket("/ws", webSocketHandler);
 
         // Register your endpoints and handle exceptions here.
         Spark.delete("/db",this::deleteEverything);

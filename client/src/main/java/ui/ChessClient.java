@@ -11,6 +11,7 @@ import mydataaccess.DataAccessException;
 import model.GameData;
 import request.*;
 import serverfacade.ServerFacade;
+import websocketfacade.WebSocketFacade;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -24,7 +25,7 @@ public class ChessClient {
     private final ServerFacade server;
     private final String serverUrl;
     private final BoardDisplay boardDisplay;
-    //private WebSocketFacade ws;
+    private WebSocketFacade ws;
     private boolean signedIn = false;
     private Gson gson = new GsonBuilder().registerTypeAdapter(new TypeToken<HashMap<ChessPosition,
             ChessPiece>>(){}.getType(), new PositionPieceMapAdapter()).create();
@@ -152,6 +153,10 @@ public class ChessClient {
     }
 
     public String joinGame(String... params) throws Exception {
+        /*
+        This first big block of code deals with the server to add the user to the
+        database and display some stuff to the terminal
+        */
         if (!signedIn){
             throw new Exception("You need to be signed in to list the games");
         }
@@ -176,6 +181,13 @@ public class ChessClient {
             }
             String result = String.format("You joined game %s (%s) as the %s player",
                     gameData.getGameName(),gameData.getGameID(),teamColor);
+            /*
+            This chunk of code is to deal with the websocket
+             */
+            ws = new WebSocketFacade(serverUrl, boardDisplay);
+            //might need to put in some variables
+            ws.joinGame(username, authToken, gameID);
+
             return result;
         }
         throw new Exception("Expected join info as <gameID> [BLACK|WHITE]");
@@ -191,7 +203,6 @@ public class ChessClient {
             GetGameRequest getGameRequest = new GetGameRequest(gameID);
             String jsonGameData = server.observeGame(getGameRequest, authToken);
             GameData gameData = gson.fromJson(jsonGameData, GameData.class);
-            boardDisplay.displayBlackBoard(gameData.getGame());
             boardDisplay.displayWhiteBoard(gameData.getGame());
             return String.format("You are now observing %s.\n" +
                     "%s is playing as white and\n" +
