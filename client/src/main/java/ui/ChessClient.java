@@ -10,9 +10,7 @@ import request.*;
 import serverfacade.ServerFacade;
 import websocketfacade.WebSocketFacade;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Objects;
+import java.util.*;
 
 import static ui.EscapeSequences.*;
 
@@ -53,7 +51,8 @@ public class ChessClient {
                 case "observe": { yield observeGame(params);}
                 case "leave" : {yield leaveGame();}
                 case "redraw" : {yield redrawBoard();}
-                case "move" :{yield makeMove();}
+                case "move" :{yield makeMove(params);}
+                case "highlight" : {yield highlight(params);}
                 case "quit" : {
                     if(signedIn){
                         String s = logout() + "\nquit";
@@ -89,6 +88,33 @@ public class ChessClient {
         }
     }
 
+    private String highlight(String... params) throws Exception {
+        if (!signedIn){
+            throw new Exception("You need to be signed in to interact with a game");
+        }
+        if(!(inGameplay || isObserving)){
+            throw new Exception("You must be playing or observing a game to highlight the valid moves");
+        }
+        if (params.length == 1){
+            ChessPosition startingPosition = stringToPosition(params[0]);
+            GameData gameData = getGameData(gameID);
+            ChessGame chessGame = gameData.getGame();
+            Collection<ChessMove> validMoves = chessGame.validMoves(startingPosition);
+            HashSet<ChessPosition> validSquares = new HashSet<>();
+            for(ChessMove m : validMoves){
+                validSquares.add(m.getEndPosition());
+            }
+            if (shouldDispWhite){
+                boardDisplay.displayWhiteBoard(chessGame, validSquares);
+            }else{
+                boardDisplay.displayBlackBoard(chessGame, validSquares);
+            }
+            String result = "Legal moves are highlighted light gray";
+            return result;
+        }
+        throw new Exception("Expected highlight information as <startingSquare>");
+    }
+
     public String login(String... params) throws Exception {
         if (signedIn){
             throw new Exception("You are already logged in.");
@@ -106,7 +132,10 @@ public class ChessClient {
         throw new Exception("Expected login info as <username> <password>");
     }
 
-    public String logout() throws DataAccessException {
+    public String logout() throws Exception {
+        if (inGameplay || isObserving){
+            leaveGame();
+        }
         LogoutRequest logoutRequest = new LogoutRequest(authToken);
         server.logout(logoutRequest);
         String username = this.username;
@@ -210,9 +239,7 @@ public class ChessClient {
         if (params.length == 1){
             String theID = params[0];
             int gameID = Integer.parseInt(theID);
-            GetGameRequest getGameRequest = new GetGameRequest(gameID);
-            String jsonGameData = server.observeGame(getGameRequest, authToken);
-            GameData gameData = gson.fromJson(jsonGameData, GameData.class);
+            GameData gameData = getGameData(gameID);
             if((Objects.equals(username, gameData.getBlackUsername())) ||
                     (Objects.equals(username, gameData.getWhiteUsername()))){
                 throw new Exception("You cannot observe a game if you are one of the players");
@@ -239,13 +266,11 @@ public class ChessClient {
         if (!(isObserving || inGameplay)){
             throw new Exception("You need to be observing or playing a game to redraw the board");
         }
-        GetGameRequest getGameRequest = new GetGameRequest(gameID);
-        String jsonGameData = server.observeGame(getGameRequest, authToken);
-        GameData gameData = gson.fromJson(jsonGameData, GameData.class);
+        GameData gameData = getGameData(gameID);
         if(shouldDispWhite){
-            boardDisplay.displayWhiteBoard(gameData.getGame());
+            boardDisplay.displayWhiteBoard(gameData.getGame(), null);
         }else{
-            boardDisplay.displayBlackBoard(gameData.getGame());
+            boardDisplay.displayBlackBoard(gameData.getGame(), null);
         }
 
         return String.format("Redrew game %s", gameID);
@@ -274,13 +299,15 @@ public class ChessClient {
         ChessMove chessMove = stringToMove(params);
         ws.makeMove(username, authToken, gameID, chessMove);
         String result;
+        /*
         if (params.length == 2){
             result = String.format("You successfully moved from %s to %s",params[0], params[1]);
         }else{
             result = String.format("You successfully moved from %s to %s and the piece was promoted to a %s",
                     params[0], params[1], params[2]);
         }
-        return result;
+         */
+        return "";
     }
 
     public String help(){
@@ -312,9 +339,7 @@ public class ChessClient {
             ChessPosition start = stringToPosition(params[0]);
             ChessPosition end = stringToPosition(params[1]);
 
-            GetGameRequest getGameRequest = new GetGameRequest(gameID);
-            String jsonGameData = server.observeGame(getGameRequest, authToken);
-            GameData gameData = gson.fromJson(jsonGameData, GameData.class);
+            GameData gameData = getGameData(gameID);
 
             ChessPiece potentialPiece = gameData.getGame().getBoard().getPiece(start);
             if(potentialPiece == null){
@@ -372,6 +397,13 @@ public class ChessClient {
         };
     }
 
+    private GameData getGameData(int gameID) throws DataAccessException {
+        GetGameRequest getGameRequest = new GetGameRequest(gameID);
+        String jsonGameData = server.observeGame(getGameRequest, authToken);
+        GameData gameData = gson.fromJson(jsonGameData, GameData.class);
+        return gameData;
+    }
+
     private final String preloginHelp = SET_TEXT_COLOR_BLUE+"register <USERNAME> <PASSWORD> <EMAIL> - to create and account \n" +
             "login <USERNAME> <PASSWORD> - to play chess \n" +
             "quit - to quit playing chess \n" +
@@ -381,7 +413,7 @@ public class ChessClient {
             "leave - to stop playing this game \n" +
             "resign - to forfeit the game \n" +
             "move <startingSquare> <finishingSquare> - to move a piece  \n" +
-            "highlight - to highlight the legal moves \n" +
+            "highlight <startingSquare> - to highlight the legal moves \n" +
             "help - to display the possible commands";
 
     private final String observingHelp = "redraw - to redraw the chess board \n" +

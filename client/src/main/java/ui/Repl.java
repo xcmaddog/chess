@@ -5,6 +5,7 @@ import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessPosition;
 
+import java.util.HashSet;
 import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
@@ -45,42 +46,43 @@ public class Repl implements BoardDisplay{
     }
 
     @Override
-    public void displayBlackBoard(ChessGame chessGame) {
-        System.out.println(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_PURPLE + manySmalls +"1"+smol+"2" +smol+ "3" +smol+ "4"
-                +smol+ "5" +smol+ "6" +smol+ "7" +smol+ "8");//print the top row
+    public void displayBlackBoard(ChessGame chessGame, HashSet<ChessPosition> validSquares) {
+        System.out.println("\n" + SET_BG_COLOR_BLACK + SET_TEXT_COLOR_PURPLE + manySmalls +"h"+smol+"g" +smol+ "f" +
+                smol+ "e" +smol+ "d" +smol+ "c" +smol+ "b" +smol+ "a");//print the top row
         for (int i = 1; i<9; i++){ //i is for row
             StringBuilder row = new StringBuilder();
             row.append(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_PURPLE);
-            row.append(String.format(someSmalls+ "%s"+someSmalls,letters[i-1]));
+            row.append(String.format(someSmalls+ "%s"+someSmalls,i));
             for(int j = 8; j>0; j--){ //j is for column
-                row.append(squareToString(new ChessPosition(i,j), chessGame.getBoard()));
+                row.append(squareToString(new ChessPosition(i,j), chessGame.getBoard(), validSquares));
             }
             row.append(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_PURPLE);
-            row.append(String.format(someSmalls+ "%s"+someSmalls,letters[i-1]));
+            row.append(String.format(someSmalls+ "%s"+someSmalls,i));
             System.out.println(row);
         }
-        System.out.println(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_PURPLE + manySmalls + "1"+smol+"2" +smol+ "3"
-                +smol+ "4" +smol+ "5" +smol+ "6" +smol+ "7" +smol+ "8");
+        System.out.println(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_PURPLE + manySmalls +"h"+smol+"g" +smol+ "f" +
+                smol+ "e" +smol+ "d" +smol+ "c" +smol+ "b" +smol+ "a");
         System.out.println(RESET);
     }
 
     @Override
-    public void displayWhiteBoard(ChessGame chessGame) {
-        System.out.println(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_PURPLE + manySmalls +"1"+smol+"2" +smol+ "3"
-                +smol+ "4" +smol+ "5" +smol+ "6" +smol+ "7" +smol+ "8");//print the top row
+    public void displayWhiteBoard(ChessGame chessGame, HashSet<ChessPosition> validSquares) {
+        System.out.println("\n"+SET_BG_COLOR_BLACK + SET_TEXT_COLOR_PURPLE + manySmalls +"a"+smol+"b" +smol+ "c"
+                +smol+ "d" +smol+ "e" +smol+ "f" +smol+ "g" +smol+ "h");//print the top row
         for (int i = 8; i>0; i--){ //i is for row
             StringBuilder row = new StringBuilder();
             row.append(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_PURPLE);
-            row.append(String.format(someSmalls+ "%s"+someSmalls,letters[i-1]));
+            String rowCap = String.format(someSmalls + "%s" + someSmalls, i);
+            row.append(rowCap);
             for(int j = 1; j<9; j++){ //j is for column
-                row.append(squareToString(new ChessPosition(i,j), chessGame.getBoard()));
+                row.append(squareToString(new ChessPosition(i,j), chessGame.getBoard(), validSquares));
             }
             row.append(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_PURPLE);
-            row.append(String.format(someSmalls+ "%s"+someSmalls,letters[i-1]));
+            row.append(rowCap);
             System.out.println(row);
         }
-        System.out.println(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_PURPLE + manySmalls + "1"+smol+"2" +smol+ "3" +smol+
-                "4" +smol+ "5" +smol+ "6" +smol+ "7" +smol+ "8");
+        System.out.println(SET_BG_COLOR_BLACK + SET_TEXT_COLOR_PURPLE + manySmalls +"a"+smol+"b" +smol+ "c"
+                +smol+ "d" +smol+ "e" +smol+ "f" +smol+ "g" +smol+ "h");
         System.out.println(RESET);
     }
 
@@ -88,9 +90,15 @@ public class Repl implements BoardDisplay{
         System.out.print("\n" + RESET + ">>> " + SET_TEXT_COLOR_PURPLE);
     }
 
-    String squareToString (ChessPosition chessPosition, ChessBoard chessBoard){
+    String squareToString (ChessPosition chessPosition, ChessBoard chessBoard, HashSet<ChessPosition> validSquares){
         StringBuilder result = new StringBuilder();
-        setNormalSquareColor(chessPosition, result);
+        if (validSquares == null){
+            setNormalSquareColor(chessPosition, result);
+        } else if (validSquares.contains(chessPosition)){
+            result.append(SET_BG_COLOR_LIGHT_GREY);
+        }else{
+            setNormalSquareColor(chessPosition, result);
+        }
         ChessPiece potentialPiece = chessBoard.getPiece(chessPosition);
         setSquareContents(potentialPiece, result);
         return result.toString();
