@@ -22,7 +22,7 @@ public class Server {
     private final GamesHandler gameHandler;
     private final websocket.WebSocketHandler webSocketHandler; // if things don't work look at this
 
-    public Server() {
+    public Server() throws DataAccessException {
         UserDAO userDAO = new SQLUserDAO();
         GameDAO gameDAO = new SQLGameDAO();
         //the server stores the location of all the data access objects
@@ -32,7 +32,7 @@ public class Server {
         this.userHandler = new UserHandler(userDAO, gameDAO, authDAO);
         this.gameHandler = new GamesHandler(userDAO, gameDAO, authDAO);
 
-        webSocketHandler = new websocket.WebSocketHandler();
+        webSocketHandler = new websocket.WebSocketHandler(gameDAO);
     }
 
     public int run(int desiredPort) {

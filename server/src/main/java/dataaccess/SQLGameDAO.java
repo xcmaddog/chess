@@ -136,6 +136,32 @@ public class SQLGameDAO extends SQLAuthDAO implements GameDAO{
         }
     }
 
+    @Override
+    public int getMaxGameID() throws DataAccessException {
+        var gameIDs = new HashSet<Integer>();
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT id FROM game";
+            try (var ps = conn.prepareStatement(statement)) {
+                try (var rs = ps.executeQuery()) {
+                    gameIDs = gameIDSetMaker(rs);
+                }
+            }
+            if (gameIDs.isEmpty()){
+                return 0;
+            } else {
+                int maxID = 0;
+                for(int id : gameIDs){
+                    if (id > maxID){
+                        maxID = id;
+                    }
+                }
+                return maxID;
+            }
+        } catch (Exception e) {
+            throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
+        }
+    }
+
     public GameData readGame(ResultSet rs) throws SQLException {
         if (rs.next()){
             int gameId = rs.getInt("id");
@@ -196,6 +222,25 @@ public class SQLGameDAO extends SQLAuthDAO implements GameDAO{
                 more = false;
             }else{
                 result.add(gameData);
+            }
+        }
+        return result;
+    }
+
+    private HashSet<Integer> gameIDSetMaker(ResultSet rs) throws SQLException {
+        HashSet<Integer> result = new HashSet<>();
+        boolean more = true;
+        while(more){
+            int gameID;
+            if (rs.next()){
+                gameID = rs.getInt("id");
+            } else {
+                gameID = 0;
+            }
+            if (gameID == 0){
+                more = false;
+            } else {
+                result.add(gameID);
             }
         }
         return result;

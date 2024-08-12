@@ -21,10 +21,12 @@ import java.util.HashSet;
 
 public class GamesService extends Service{
 
-    private int nextGameID = 1;
+    private int nextGameID;
 
-    public GamesService (UserDAO userDAO, GameDAO gameDAO, AuthDAO authDAO){
+    public GamesService (UserDAO userDAO, GameDAO gameDAO, AuthDAO authDAO) throws DataAccessException{
         super(userDAO, gameDAO, authDAO);
+        int maxDBID = gameDAO.getMaxGameID();
+        this.nextGameID = maxDBID+1;
     }
 
     public ListGamesResult getGames(ListGamesRequest listGamesRequest) throws DataAccessException {

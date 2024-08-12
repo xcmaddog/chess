@@ -90,31 +90,9 @@ public class Repl implements BoardDisplay{
 
     String squareToString (ChessPosition chessPosition, ChessBoard chessBoard){
         StringBuilder result = new StringBuilder();
-        if (chessPosition.getRow() % 2 == 1){ // odd row
-            if(chessPosition.getColumn() % 2 == 1){ // odd column
-                result.append(SET_BG_COLOR_BLACK);//dark background
-            } else{ //even column
-                result.append(SET_BG_COLOR_DARK_GREY);//light background
-            }
-        } else{ //even row
-            if(chessPosition.getColumn() % 2 == 1){ // odd column
-                result.append(SET_BG_COLOR_DARK_GREY);//light background
-            } else{//even column
-                result.append(SET_BG_COLOR_BLACK);//light background
-            }
-        }
+        setNormalSquareColor(chessPosition, result);
         ChessPiece potentialPiece = chessBoard.getPiece(chessPosition);
-        if (potentialPiece == null){
-            result.append(EMPTY);
-        } else if(potentialPiece.getTeamColor() == ChessGame.TeamColor.WHITE){
-            result.append(SET_TEXT_COLOR_PURPLE);
-            String pieceString = pieceToString(potentialPiece);
-            result.append(pieceString);
-        }else{
-            result.append(SET_TEXT_COLOR_BLUE);
-            String pieceString = pieceToString(potentialPiece);
-            result.append(pieceString);
-        }
+        setSquareContents(potentialPiece, result);
         return result.toString();
     }
 
@@ -128,6 +106,36 @@ public class Repl implements BoardDisplay{
             case BISHOP : { yield BLACK_BISHOP;}
             case KNIGHT: { yield BLACK_KNIGHT;}
         };
+    }
+
+    private void setNormalSquareColor(ChessPosition chessPosition, StringBuilder result){
+        if (chessPosition.getRow() % 2 == 1){ // odd row
+            if(chessPosition.getColumn() % 2 == 1){ // odd column
+                result.append(SET_BG_COLOR_BLACK);//dark background
+            } else{ //even column
+                result.append(SET_BG_COLOR_DARK_GREY);//light background
+            }
+        } else{ //even row
+            if(chessPosition.getColumn() % 2 == 1){ // odd column
+                result.append(SET_BG_COLOR_DARK_GREY);//light background
+            } else{//even column
+                result.append(SET_BG_COLOR_BLACK);//light background
+            }
+        }
+    }
+
+    private void setSquareContents(ChessPiece potentialPiece, StringBuilder result){
+        if (potentialPiece == null){
+            result.append(EMPTY);
+        } else if(potentialPiece.getTeamColor() == ChessGame.TeamColor.WHITE){
+            result.append(SET_TEXT_COLOR_PURPLE);
+            String pieceString = pieceToString(potentialPiece);
+            result.append(pieceString);
+        }else{
+            result.append(SET_TEXT_COLOR_BLUE);
+            String pieceString = pieceToString(potentialPiece);
+            result.append(pieceString);
+        }
     }
 
     private final String manySmalls = SMALL + SMALL+ SMALL + SMALL +SMALL + SMALL + SMALL + SMALL + SMALL + SMALL+

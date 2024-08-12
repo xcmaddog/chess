@@ -2,10 +2,12 @@ package dataaccess;
 
 import model.GameData;
 import model.GameInfo;
+import mydataaccess.DataAccessException;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
 public class MemoryGameDAO implements GameDAO{
 
@@ -46,5 +48,17 @@ public class MemoryGameDAO implements GameDAO{
     @Override
     public boolean isEmpty() {
         return games.isEmpty();
+    }
+
+    @Override
+    public int getMaxGameID() throws DataAccessException {
+        Set<Integer> gameIDs = games.keySet();
+        int maxID = 0;
+        for(int id : gameIDs){
+            if (id > maxID){
+                maxID = id;
+            }
+        }
+        return maxID;
     }
 }

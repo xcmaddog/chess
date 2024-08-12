@@ -32,7 +32,7 @@ class GamesServiceTest {
     private GamesService gameService;
 
     @BeforeEach
-    void setUp() throws InvalidMoveException {
+    void setUp() throws InvalidMoveException, DataAccessException {
         MemoryUserDAO memoryUserDAO = new MemoryUserDAO();
         MemoryAuthDAO memoryAuthDAO = new MemoryAuthDAO();
         MemoryGameDAO memoryGameDAO = new MemoryGameDAO();

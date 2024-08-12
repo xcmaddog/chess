@@ -20,7 +20,7 @@ public class GamesHandler {
     private final Gson serializer;
     private final GamesService gamesService;
 
-    public GamesHandler(UserDAO userDAO, GameDAO gameDAO, AuthDAO authDAO) {
+    public GamesHandler(UserDAO userDAO, GameDAO gameDAO, AuthDAO authDAO) throws DataAccessException {
         this.serializer = new Gson();
         this.gamesService = new GamesService(userDAO,gameDAO,authDAO);
     }
