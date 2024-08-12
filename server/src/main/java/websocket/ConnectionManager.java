@@ -2,8 +2,8 @@ package websocket;
 
 import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
+import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
-import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
@@ -57,13 +57,13 @@ public class ConnectionManager {
         }
     }
 
-    public void sendBoard(int gameID, String username, LoadGameMessage gameMessage) throws IOException {
+    public void individualMessage(int gameID, String username, ServerMessage message) throws IOException {
         HashMap<String, Connection> relevantConnections = connections.get(gameID);
         var removeList = new ArrayList<Connection>();
         for (var c : relevantConnections.values()) {
             if (c.session.isOpen()) {
                 if (c.playerName.equals(username)) {
-                    String json = gson.toJson(gameMessage);
+                    String json = gson.toJson(message);
                     //c.send(notification.toString()); ----this is the old code. I'm keeping it here in case it proves useful for the different classes
                     c.send(json);
                 }
@@ -76,4 +76,13 @@ public class ConnectionManager {
             relevantConnections.remove(c.playerName);
         }
     }
+    /*
+    public void sendMessage(int gameID, String username, ErrorMessage errorMessage) throws IOException {
+        HashMap<String, Connection> relevantConnections = connections.get(gameID);
+        Connection theConnection = relevantConnections.get(username);
+        String json = gson.toJson(errorMessage);
+        theConnection.send(json);
+        //if something goes wrong, check that I didn't need to close any connections here
+    }
+     */
 }

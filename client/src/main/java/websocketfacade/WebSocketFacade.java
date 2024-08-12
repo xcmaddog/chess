@@ -48,11 +48,11 @@ public class WebSocketFacade extends Endpoint {
                     var messageType = serverMessage.getServerMessageType();
                     switch (messageType) {
                         case NOTIFICATION -> {
-                            NotificationMessage notificationMessage = (NotificationMessage) serverMessage;
+                            NotificationMessage notificationMessage = gson.fromJson(message, NotificationMessage.class);
                             boardDisplay.displayMessage(notificationMessage.getMessage());
                         }
                         case ERROR -> {
-                            ErrorMessage errorMessage = (ErrorMessage) serverMessage;
+                            ErrorMessage errorMessage = gson.fromJson(message, ErrorMessage.class);
                             boardDisplay.displayMessage(errorMessage.getErrorMessage());
                         }
                         case LOAD_GAME -> {
@@ -82,7 +82,7 @@ public class WebSocketFacade extends Endpoint {
             UserGameCommand userGameCommand =
                     new UserGameCommand(UserGameCommand.CommandType.CONNECT, username, authToken, GameId);
             this.session.getBasicRemote().sendText(new Gson().toJson(userGameCommand));
-        } catch(Exception e){ // maybe catch specific excecption type
+        } catch(Exception e){ // maybe catch specific exception type
             throw new Exception("failed to join the game");
         }
     }
