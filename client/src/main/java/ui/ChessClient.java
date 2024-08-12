@@ -15,6 +15,7 @@ import websocketfacade.WebSocketFacade;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Objects;
 
 import static ui.EscapeSequences.*;
 
@@ -205,19 +206,25 @@ public class ChessClient {
             throw new Exception("You need to be signed in to list the games");
         }
         if (isObserving || inGameplay){
-            throw new Exception("You cannot join a game if you are already observing or playing another game");
+            throw new Exception("You cannot join a game if you are already observing or playing a game");
         }
+
         if (params.length == 1){
             String theID = params[0];
             int gameID = Integer.parseInt(theID);
             GetGameRequest getGameRequest = new GetGameRequest(gameID);
             String jsonGameData = server.observeGame(getGameRequest, authToken);
             GameData gameData = gson.fromJson(jsonGameData, GameData.class);
-            boardDisplay.displayWhiteBoard(gameData.getGame());
-
+            if((Objects.equals(username, gameData.getBlackUsername())) ||
+                    (Objects.equals(username, gameData.getWhiteUsername()))){
+                throw new Exception("You cannot observe a game if you are one of the players");
+            }
+            ws = new WebSocketFacade(serverUrl, boardDisplay);
+            ws.joinGame(username, authToken, gameID);
             shouldDispWhite = true;
             this.gameID = gameID;
             isObserving =true;
+            inGameplay = false;
 
             return String.format("You are now observing %s.\n" +
                     "%s is playing as white and\n" +

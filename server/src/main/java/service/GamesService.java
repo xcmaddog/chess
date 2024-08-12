@@ -18,6 +18,7 @@ import result.ListGamesResult;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 
 public class GamesService extends Service{
 
@@ -54,27 +55,28 @@ public class GamesService extends Service{
         if(! isAuthorized(authToken)){
             throw new DataAccessException("Invalid AuthToken");
         }
+        String username = authDAO.getAuth(authToken).username();
         GameData gameData = gameDAO.getGame(joinGameRequest.gameID());
         if (gameData == null){
             throw new DataAccessException("Game not found");
         }
         ChessGame.TeamColor color = joinGameRequest.playerColor();
         if (color == ChessGame.TeamColor.WHITE) {
-            if (gameData.getWhiteUsername() != null) {
-                throw new DataAccessException("There is already someone playing white in this game");
+            if ((gameData.getWhiteUsername() != null) && (!Objects.equals(gameData.getWhiteUsername(), username))) {
+                throw new DataAccessException("There is already someone else playing white in this game");
             }
-            String username = authDAO.getAuth(authToken).username();
-            GameData newData = new GameData(gameData.getGameID(), gameData.getGameName(), gameData.getGame(), username, gameData.getBlackUsername());
+            GameData newData = new GameData(gameData.getGameID(), gameData.getGameName(), gameData.getGame(), username,
+                    gameData.getBlackUsername());
             gameDAO.updateGame(newData);
             JoinGameResult joinGameResult = new JoinGameResult(newData);
             return joinGameResult;
         } else {
-            if (gameData.getBlackUsername() != null) {
+            if ((gameData.getBlackUsername() != null) && (!Objects.equals(gameData.getBlackUsername(), username))) {
                 throw new DataAccessException("There is already someone playing black in this game");
             }
-            String username = authDAO.getAuth(authToken).username();
-            GameData newData = new GameData(gameData.getGameID(), gameData.getGameName(), gameData.getGame(), gameData.getWhiteUsername(), username);
-            gameDAO.updateGame(newData);
+            GameData newData = new GameData(gameData.getGameID(), gameData.getGameName(), gameData.getGame(),
+                    gameData.getWhiteUsername(), username);
+            gameDAO.updateGame(newData);//theoretically could make this more efficient by not using DAO if existing player
             JoinGameResult joinGameResult = new JoinGameResult(newData);
             return joinGameResult;
         }

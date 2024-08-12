@@ -4,7 +4,7 @@ import chess.ChessBoard;
 import chess.ChessGame;
 import com.google.gson.Gson;
 import dataaccess.GameDAO;
-import model.GameData;.
+import model.GameData;
 
 
 
