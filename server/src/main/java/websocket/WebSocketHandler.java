@@ -98,45 +98,51 @@ public class WebSocketHandler {
             gameData = gameDAO.getGame(gameID);
             chessGame = gameData.getGame();
             //send picture of board
-            ChessGame.TeamColor color = ChessGame.TeamColor.WHITE;
             ChessGame.TeamColor oppColor = ChessGame.TeamColor.BLACK;
             boolean shouldDispWhite = true;
             if(Objects.equals(username, gameData.getBlackUsername())){
                 shouldDispWhite = false;
-                color = ChessGame.TeamColor.BLACK;
                 oppColor = ChessGame.TeamColor.WHITE;
             }
             LoadGameMessage loadGameMessage =
                     new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, chessGame, shouldDispWhite);
             connections.broadcast(gameID, null, loadGameMessage);
             //sent text notification
-            String message;
-            if(chessMove.getPromotionPiece() != null){
-                message = String.format("%s moved a pawn from %s to %s and promoted it to a %s",
-                        username, chessMove.getStartPosition(), chessMove.getEndPosition(), chessMove.getPromotionPiece());
-            } else{
-                message = String.format("%s moved from %s to %s", username, chessMove.getStartPosition(), chessMove.getEndPosition());
-            }
-            NotificationMessage notificationMessage =
-                    new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,message);
-            connections.broadcast(gameID, username, notificationMessage);
-            //notify of check/checkmate
-            if (chessGame.isInCheckmate(oppColor)){
-                message = String.format("The game is now in checkmate and %s wins", username);
-                notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-                connections.broadcast(gameID, null, notificationMessage);
-            } else if (chessGame.isInCheck(oppColor)) {
-                message = String.format("%s put their opponent in check",username);
-                notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-                connections.broadcast(gameID, null, notificationMessage);
-            } else if (chessGame.isInStalemate(oppColor)) {
-                message = "The game is now in stalemate";
-                notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-                connections.broadcast(gameID, null, notificationMessage);
-            }
+            sendMoveText(chessMove, username, gameID);
+            //notify of check/checkmate/stalemate
+            sendGameStatus(chessGame,username,gameID,oppColor);
         } catch(InvalidMoveException e){
             ErrorMessage errorMessage = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, e.getMessage());
             connections.individualMessage(gameID, username, errorMessage);
+        }
+    }
+    private void sendMoveText(ChessMove chessMove, String username, int gameID) throws IOException {
+        String message;
+        if(chessMove.getPromotionPiece() != null){
+            message = String.format("%s moved a pawn from %s to %s and promoted it to a %s",
+                    username, chessMove.getStartPosition(), chessMove.getEndPosition(), chessMove.getPromotionPiece());
+        } else{
+            message = String.format("%s moved from %s to %s", username, chessMove.getStartPosition(), chessMove.getEndPosition());
+        }
+        NotificationMessage notificationMessage =
+                new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,message);
+        connections.broadcast(gameID, username, notificationMessage);
+    }
+    private void sendGameStatus(ChessGame chessGame, String username, int gameID, ChessGame.TeamColor oppColor) throws IOException {
+        String message;
+        NotificationMessage notificationMessage;
+        if (chessGame.isInCheckmate(oppColor)){
+            message = String.format("The game is now in checkmate and %s wins", username);
+            notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+            connections.broadcast(gameID, null, notificationMessage);
+        } else if (chessGame.isInCheck(oppColor)) {
+            message = String.format("%s put their opponent in check",username);
+            notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+            connections.broadcast(gameID, null, notificationMessage);
+        } else if (chessGame.isInStalemate(oppColor)) {
+            message = "The game is now in stalemate";
+            notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+            connections.broadcast(gameID, null, notificationMessage);
         }
     }
 }
