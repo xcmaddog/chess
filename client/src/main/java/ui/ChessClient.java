@@ -54,6 +54,9 @@ public class ChessClient {
                 case "move" :{yield makeMove(params);}
                 case "highlight" : {yield highlight(params);}
                 case "quit" : {
+                    if(inGameplay || isObserving){
+                        leaveGame();
+                    }
                     if(signedIn){
                         String s = logout() + "\nquit";
                         yield s;

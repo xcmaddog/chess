@@ -58,9 +58,9 @@ public class WebSocketFacade extends Endpoint {
                         case LOAD_GAME -> {
                             LoadGameMessage loadGameMessage = gson.fromJson(message, LoadGameMessage.class);
                             if(loadGameMessage.shouldDispWhite()){
-                                boardDisplay.displayWhiteBoard(loadGameMessage.getChessGame(), null);
+                                boardDisplay.displayWhiteBoard(loadGameMessage.getGame(), null);
                             } else{
-                                boardDisplay.displayBlackBoard(loadGameMessage.getChessGame(), null);
+                                boardDisplay.displayBlackBoard(loadGameMessage.getGame(), null);
                             }
                         }
                     }

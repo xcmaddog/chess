@@ -9,6 +9,7 @@ import websocket.messages.ServerMessage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ConnectionManager {
@@ -42,7 +43,8 @@ public class ConnectionManager {
         var removeList = new ArrayList<Connection>();
         for (var c : relevantConnections.values()) {
             if (c.session.isOpen()) {
-                if (!c.playerName.equals(excludePlayerName)) {
+                //!c.playerName.equals(excludePlayerName)
+                if (!Objects.equals(c.playerName,excludePlayerName)) {
                     String json = gson.toJson(message);
                     //c.send(notification.toString()); ----this is the old code. I'm keeping it here in case it proves useful for the different classes
                     c.send(json);
@@ -62,7 +64,8 @@ public class ConnectionManager {
         var removeList = new ArrayList<Connection>();
         for (var c : relevantConnections.values()) {
             if (c.session.isOpen()) {
-                if (c.playerName.equals(username)) {
+                //c.playerName.equals(username)
+                if (Objects.equals(c.playerName,username)) {
                     String json = gson.toJson(message);
                     //c.send(notification.toString()); ----this is the old code. I'm keeping it here in case it proves useful for the different classes
                     c.send(json);
