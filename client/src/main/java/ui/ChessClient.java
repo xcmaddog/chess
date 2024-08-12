@@ -1,9 +1,6 @@
 package ui;
 
-import chess.ChessGame;
-import chess.ChessPiece;
-import chess.ChessPosition;
-import chess.PositionPieceMapAdapter;
+import chess.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -56,6 +53,7 @@ public class ChessClient {
                 case "observe": { yield observeGame(params);}
                 case "leave" : {yield leaveGame();}
                 case "redraw" : {yield redrawBoard();}
+                case "move" :{yield makeMove();}
                 case "quit" : {
                     if(signedIn){
                         String s = logout() + "\nquit";
@@ -269,6 +267,22 @@ public class ChessClient {
         }
     }
 
+    public String makeMove(String... params) throws Exception {
+        if(!inGameplay){
+            throw new Exception("You need to be playing a game to make a move");
+        }
+        ChessMove chessMove = stringToMove(params);
+        ws.makeMove(username, authToken, gameID, chessMove);
+        String result;
+        if (params.length == 2){
+            result = String.format("You successfully moved from %s to %s",params[0], params[1]);
+        }else{
+            result = String.format("You successfully moved from %s to %s and the piece was promoted to a %s",
+                    params[0], params[1], params[2]);
+        }
+        return result;
+    }
+
     public String help(){
         if (!signedIn){
             return preloginHelp;
@@ -291,6 +305,71 @@ public class ChessClient {
     public boolean isSignedIn(){
         boolean result = signedIn;
         return result;
+    }
+
+    private ChessMove stringToMove(String... params) throws Exception {
+        if (params.length == 2 || params.length == 3){
+            ChessPosition start = stringToPosition(params[0]);
+            ChessPosition end = stringToPosition(params[1]);
+
+            GetGameRequest getGameRequest = new GetGameRequest(gameID);
+            String jsonGameData = server.observeGame(getGameRequest, authToken);
+            GameData gameData = gson.fromJson(jsonGameData, GameData.class);
+
+            ChessPiece potentialPiece = gameData.getGame().getBoard().getPiece(start);
+            if(potentialPiece == null){
+                String message = String.format("There is not a piece at %s", params[0]);
+                throw new Exception(message);
+            }
+            ChessMove chessMove;
+            if (params.length == 3){
+                ChessPiece.PieceType pieceType = stringToType(params[2]);
+                chessMove = new ChessMove(start, end, pieceType);
+            } else{
+                chessMove = new ChessMove(start, end);
+            }
+            return chessMove;
+        }
+        throw new Exception("Expected input in format: move <startingSquare> <finishingSquare> \n" +
+                "or move <startingSquare> <finishingSquare> <promoteTo>");
+    }
+
+    private ChessPosition stringToPosition(String writtenPosition) throws Exception {
+        char[] validLetters = {'a','b','c','d','e','f','g','h'};
+        if(writtenPosition.length() == 2){
+            char first = Character.toLowerCase(writtenPosition.charAt(0));
+            char second = writtenPosition.charAt(1);
+            int col = 0;
+            int counter = 0;
+            for (char c : validLetters){
+                counter++;
+                if (c == first){
+                    col = counter;
+                }
+            }
+            if (col == 0){
+                throw new Exception("Expected the first character to be a letter between 'a' and 'h'");
+            }
+            int row = Character.getNumericValue(second);
+            if (row < 1 || row > 8 ){
+                throw new Exception("Expected the second character to be a digit between 1 and 8");
+            }
+            return new ChessPosition(row, col);
+        }
+        throw new Exception("Position expected to be two characters long. ie: e4");
+    }
+
+    private ChessPiece.PieceType stringToType (String writtenType) throws Exception {
+        writtenType = writtenType.toLowerCase();
+        return switch (writtenType){
+            case "queen","q" : {yield ChessPiece.PieceType.QUEEN;}
+            case "king" : {yield ChessPiece.PieceType.KING;}
+            case "rook", "castle", "r","c" : {yield ChessPiece.PieceType.ROOK;}
+            case "bishop","b" : {yield ChessPiece.PieceType.BISHOP;}
+            case "knight", "horse","k", "h" : {yield ChessPiece.PieceType.KNIGHT;}
+            case "pawn", "p" : {yield ChessPiece.PieceType.PAWN;}
+            default: {throw new Exception("Expected final input to be the name of a piece type");}
+        };
     }
 
     private final String preloginHelp = SET_TEXT_COLOR_BLUE+"register <USERNAME> <PASSWORD> <EMAIL> - to create and account \n" +
