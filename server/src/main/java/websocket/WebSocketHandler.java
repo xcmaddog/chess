@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
+import dataaccess.UserDAO;
 import model.AuthData;
 import model.GameData;
 
@@ -15,6 +16,9 @@ import mydataaccess.DataAccessException;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import request.JoinGameRequest;
+import request.RegisterRequest;
+import service.GamesService;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ErrorMessage;
@@ -32,12 +36,16 @@ public class WebSocketHandler {
     private final ConnectionManager connections = new ConnectionManager();
     private final GameDAO gameDAO;
     private final AuthDAO authDAO;
+    private final UserDAO userDAO;
+    private final GamesService gamesService;
     private final Gson gson = new GsonBuilder().registerTypeAdapter(new TypeToken<HashMap<ChessPosition,
             ChessPiece>>(){}.getType(), new PositionPieceMapAdapter()).create();
 
-    public WebSocketHandler(GameDAO gameDAO, AuthDAO authDAO){
+    public WebSocketHandler(UserDAO userDAO, GameDAO gameDAO, AuthDAO authDAO) throws DataAccessException {
         this.gameDAO = gameDAO;
         this.authDAO = authDAO;
+        this.userDAO = userDAO;
+        this.gamesService = new GamesService(userDAO, gameDAO, authDAO);
     }
 
     @OnWebSocketMessage
@@ -53,35 +61,44 @@ public class WebSocketHandler {
                 MakeMoveCommand moveCommand = gson.fromJson(message, MakeMoveCommand.class);
                 move(username, moveCommand.getGameID(), moveCommand.getChessMove(), session);
             }
-            default -> throw new IOException("Error: wrong game command type");
+            default -> sendError(username, action.getGameID(), "Error: game command failed");
         }
     }
 
-    private void join(String username, int gameID, Session session) throws IOException, DataAccessException {
-        GameData gameData= gameDAO.getGame(gameID);
-        if (gameData == null){
-            throw new DataAccessException("There is not a game by that ID");
+    private void join(String username, int gameID, Session session) {
+        GameData gameData = null;
+        try{
+            gameData= gameDAO.getGame(gameID);
+        } catch(DataAccessException e){
+            String msg = "There is not a game by that ID";
+            sendError(username, gameID, msg);
         }
-        boolean shouldDispWhite = true;
-        if(Objects.equals(gameData.getBlackUsername(), username)){
-            shouldDispWhite = false;
+        if (gameData != null){
+            try{
+                boolean shouldDispWhite = true;
+                if(Objects.equals(gameData.getBlackUsername(), username)){
+                    shouldDispWhite = false;
+                }
+                connections.add(gameID, username, session);
+                String message;
+                if(Objects.equals(gameData.getBlackUsername(), username)){
+                    message = String.format("%s has joined game %s. They are the BLACK player", username, gameID);
+                } else if(Objects.equals(gameData.getWhiteUsername(), username)){
+                    message = String.format("%s has joined game %s. They are the WHITE player", username, gameID);
+                } else{
+                    message = String.format("%s has joined game %s. They are an observer.", username, gameID);
+                }
+                NotificationMessage notification =
+                        new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+                connections.broadcast(gameID, username, notification);
+                ChessGame chessGame = gameData.getGame();
+                LoadGameMessage loadGameMessage =
+                        new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, chessGame,shouldDispWhite);
+                connections.individualMessage(gameID, username, loadGameMessage);
+            }catch(Exception e){
+                sendError(username, gameID, e.getMessage());
+            }
         }
-        connections.add(gameID, username, session);
-        String message;
-        if(Objects.equals(gameData.getBlackUsername(), username)){
-            message = String.format("%s has joined game %s. They are the BLACK player", username, gameID);
-        } else if(Objects.equals(gameData.getWhiteUsername(), username)){
-            message = String.format("%s has joined game %s. They are the WHITE player", username, gameID);
-        } else{
-            message = String.format("%s has joined game %s. They are an observer.", username, gameID);
-        }
-        NotificationMessage notification =
-                new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-        connections.broadcast(gameID, username, notification);
-        ChessGame chessGame = gameData.getGame();
-        LoadGameMessage loadGameMessage =
-                new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, chessGame,shouldDispWhite);
-        connections.individualMessage(gameID, username, loadGameMessage);
     }
 
     private void leave(String username, int gameID, Session session) throws IOException, DataAccessException {
@@ -168,6 +185,15 @@ public class WebSocketHandler {
             message = "The game is now in stalemate";
             notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
             connections.broadcast(gameID, null, notificationMessage);
+        }
+    }
+
+    private void sendError(String username,int gameID, String message){
+        try{
+            ErrorMessage errorMessage = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, message);
+            connections.individualMessage(gameID, username, errorMessage);
+        } catch (IOException e){//beware of infinite loops
+            sendError(username, gameID, e.getMessage());
         }
     }
 }

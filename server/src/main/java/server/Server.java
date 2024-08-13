@@ -32,7 +32,7 @@ public class Server {
         this.userHandler = new UserHandler(userDAO, gameDAO, authDAO);
         this.gameHandler = new GamesHandler(userDAO, gameDAO, authDAO);
 
-        webSocketHandler = new websocket.WebSocketHandler(gameDAO, authDAO);
+        webSocketHandler = new websocket.WebSocketHandler(userDAO, gameDAO, authDAO);
     }
 
     public int run(int desiredPort) {

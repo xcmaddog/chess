@@ -215,17 +215,27 @@ public class ChessClient {
                 throw new Exception("Expected to join either \"WHITE\" or \"BLACK\" team");
             }
             JoinGameRequest joinGameRequest = new JoinGameRequest(teamColor, gameID);
-            String json = server.joinGame(joinGameRequest, authToken);
-            GameData gameData = gson.fromJson(json, GameData.class);
-            String result = String.format("You joined game %s (%s) as the %s player",
-                    gameData.getGameName(),gameData.getGameID(),teamColor);
+
             /*
             This chunk of code is to deal with the websocket
              */
             ws = new WebSocketFacade(serverUrl, boardDisplay);
             ws.joinGame(username, authToken, gameID);
             inGameplay = true;
-
+            String result;
+            try{
+                String json = server.joinGame(joinGameRequest, authToken);
+                GameData gameData = gson.fromJson(json, GameData.class);
+                result = String.format("You joined game %s (%s) as the %s player",
+                        gameData.getGameName(),gameData.getGameID(),teamColor);
+            } catch (DataAccessException e){
+                ws.leaveGame(username, authToken, gameID);
+                this.gameID = 0;
+                isObserving = false;
+                inGameplay = false;
+                result = String.format("You failed to join game %s as the %s player",
+                        gameID,teamColor);
+            }
             return result;
         }
         throw new Exception("Expected join info as <gameID> [BLACK|WHITE]");
