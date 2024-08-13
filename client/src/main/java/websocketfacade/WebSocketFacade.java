@@ -80,7 +80,7 @@ public class WebSocketFacade extends Endpoint {
     public void joinGame(String username, String authToken, int GameId) throws Exception {
         try{
             UserGameCommand userGameCommand =
-                    new UserGameCommand(UserGameCommand.CommandType.CONNECT, username, authToken, GameId);
+                    new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, GameId);
             this.session.getBasicRemote().sendText(new Gson().toJson(userGameCommand));
         } catch(Exception e){ // maybe catch specific exception type
             throw new Exception("failed to join the game");
@@ -89,7 +89,7 @@ public class WebSocketFacade extends Endpoint {
     public void leaveGame(String username, String authToken, int GameId) throws Exception {
         try{
             UserGameCommand userGameCommand =
-                    new UserGameCommand(UserGameCommand.CommandType.LEAVE, username, authToken, GameId);
+                    new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, GameId);
             String json = gson.toJson(userGameCommand);
             this.session.getBasicRemote().sendText(json);
         } catch (Exception e){
@@ -100,7 +100,7 @@ public class WebSocketFacade extends Endpoint {
     public void makeMove(String username, String authToken, int gameID, ChessMove chessMove) throws Exception {
         try{
             MakeMoveCommand makeMoveCommand =
-                    new MakeMoveCommand(UserGameCommand.CommandType.MAKE_MOVE, username, authToken, gameID, chessMove);
+                    new MakeMoveCommand(UserGameCommand.CommandType.MAKE_MOVE, authToken, gameID, chessMove);
             String json = gson.toJson(makeMoveCommand);
             this.session.getBasicRemote().sendText(json);
         } catch (Exception e){

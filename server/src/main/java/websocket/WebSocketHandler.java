@@ -4,7 +4,9 @@ import chess.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
+import model.AuthData;
 import model.GameData;
 
 
@@ -29,22 +31,27 @@ import java.util.Objects;
 public class WebSocketHandler {
     private final ConnectionManager connections = new ConnectionManager();
     private final GameDAO gameDAO;
+    private final AuthDAO authDAO;
     private final Gson gson = new GsonBuilder().registerTypeAdapter(new TypeToken<HashMap<ChessPosition,
             ChessPiece>>(){}.getType(), new PositionPieceMapAdapter()).create();
 
-    public WebSocketHandler(GameDAO gameDAO){
+    public WebSocketHandler(GameDAO gameDAO, AuthDAO authDAO){
         this.gameDAO = gameDAO;
+        this.authDAO = authDAO;
     }
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException, DataAccessException {
         UserGameCommand action = gson.fromJson(message, UserGameCommand.class);
+        String authToken = action.getAuthToken();
+        AuthData autData = authDAO.getAuth(authToken);
+        String username = autData.username();
         switch (action.getCommandType()) {
-            case CONNECT -> join(action.getUsername(), action.getGameID(), session);
-            case LEAVE -> leave(action.getUsername(), action.getGameID(), session);
+            case CONNECT -> join(username, action.getGameID(), session);
+            case LEAVE -> leave(username, action.getGameID(), session);
             case MAKE_MOVE -> {
                 MakeMoveCommand moveCommand = gson.fromJson(message, MakeMoveCommand.class);
-                move(moveCommand.getUsername(), moveCommand.getGameID(), moveCommand.getChessMove(), session);
+                move(username, moveCommand.getGameID(), moveCommand.getChessMove(), session);
             }
             default -> throw new IOException("Error: wrong game command type");
         }
@@ -52,6 +59,9 @@ public class WebSocketHandler {
 
     private void join(String username, int gameID, Session session) throws IOException, DataAccessException {
         GameData gameData= gameDAO.getGame(gameID);
+        if (gameData == null){
+            throw new DataAccessException("There is not a game by that ID");
+        }
         boolean shouldDispWhite = true;
         if(Objects.equals(gameData.getBlackUsername(), username)){
             shouldDispWhite = false;
